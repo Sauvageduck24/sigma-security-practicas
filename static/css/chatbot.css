@@ -1,0 +1,35 @@
+body {
+    background-color: #D6E4F0;
+}
+
+.chat-box {
+    max-height: 400px; /* Limita la altura y permite el scroll si hay muchos mensajes */
+    overflow-y: auto;
+}
+
+.card {
+    width: 100%; /* Asegura que la tarjeta use todo el ancho disponible */
+    background-color: #ffffff;
+}
+
+.card-body {
+    min-height: 300px; /* Evita que el chat sea demasiado pequeño */
+}
+.mensaje_bot {
+
+    background-color: #A9C3E8;
+    color: rgb(0, 0, 0);
+    padding: 8px 12px;
+    border-radius: 8px; /* Bordes redondeados */
+    max-width: 80%; /* Para evitar que el mensaje sea demasiado ancho */
+    display: inline-block; /* Para que se ajuste al contenido */
+}
+.mensaje_persona {
+
+    background-color: #274880;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px; /* Bordes redondeados */
+    max-width: 80%; /* Para evitar que el mensaje sea demasiado ancho */
+    display: inline-block; /* Para que se ajuste al contenido */
+}

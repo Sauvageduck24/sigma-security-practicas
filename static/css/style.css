@@ -1,0 +1,522 @@
+html, body {
+    background: url("{{ url_for('static', filename='videos/main.gif') }}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+
+/* Agregar espacio en main para evitar que el contenido esté pegado */
+main {
+    margin-top: 80px; /* Ajusta según lo necesites */
+    padding: 20px;    /* Ajusta según lo necesites */
+    flex: 1;
+}
+
+/* Línea de neón debajo del header */
+header {
+    background-color: #1a2b49;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Aseguramos que no haya animación en los enlaces del header */
+header .nav-link, .nav-link {
+    color: white !important;
+    transition: none !important;  /* Elimina cualquier transición */
+    text-decoration: none !important; /* Asegura que no haya subrayado */
+}
+
+/* Desactiva cualquier posible transición en hover */
+header .nav-link:hover, .nav-link:hover {
+    color: white !important;
+    text-decoration: none !important;
+    transition: none !important;
+}
+
+header .btn-neon:hover {
+    background: grey; /* Cambia el fondo a un color específico cuando pasa el ratón */
+    color: #000;          /* Cambia el color del texto cuando pasa el ratón */
+}
+
+/* Efecto neón en los botones del header */
+header .btn-neon {
+    background: black;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-right: 10px;  /* Agregar margen derecho */
+}
+
+footer {
+    background-color: #335c88;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff;
+}
+
+footer .nav-link {
+    color: white !important;
+}
+
+footer .text-body-secondary {
+    color: white !important;
+}
+
+.alert {
+    background-color: #f4a261;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.main-title {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #d9d9d9;
+}
+
+.main-title h1 {
+    font-size: 4em;
+    margin: 0;
+    color: #1a2b49;
+}
+
+.main-title p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+    background-color: #d9d9d9;
+}
+
+.card {
+    background-color: #a3bffa;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    border-radius: 10px;
+}
+.workflow {
+    display: flex;
+    flex-direction: row;
+    margin-right: 4cm;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f0f0f0;
+    border-radius: 2cm;
+    gap: 20px;
+}
+
+.img-workflow {
+    display: flex;
+    margin-left: 2cm;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative; /* Para posicionar los botones */
+}
+
+.workflow-steps {
+    max-width: 50%;
+    padding-right: 5cm;
+}
+
+.workflow-steps h3 {
+    margin: 0 0 10px;
+}
+
+.workflow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+    margin-left: 7cm;
+    margin-right: 7cm;
+    background-color: #f0f0f0;
+    border-radius: 2cm;
+    gap: 20px;
+}
+
+.img-workflow {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.workflow-steps {
+    max-width: 50%;
+}
+
+/* Estilos del carrusel */
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 5 / 3;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.carousel-images {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+}
+
+.carousel-button.prev {
+    left: 10px;
+}
+
+.carousel-button.next {
+    right: 10px;
+}
+
+.carousel-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Ajustes para el contenedor workflow */
+.workflow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f0f0f0;
+    border-radius: 2cm;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px; /* Limita el ancho máximo en pantallas grandes */
+    margin: 0 auto; /* Centra el contenedor */
+}
+
+.img-workflow {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.workflow-steps {
+    max-width: 50%;
+    text-align: center;
+}
+
+.workflow-steps h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.workflow-steps p {
+    margin-bottom: 20px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .workflow {
+        flex-direction: column; /* Apila el carrusel y los pasos */
+        align-items: center;
+        padding: 20px;
+        gap: 30px; /* Más espacio entre carrusel y pasos */
+    }
+
+    .img-workflow {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .carousel {
+        max-width: 100%;
+        aspect-ratio: 5 / 3;
+    }
+
+    .workflow-steps {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    /* Ajustes para los pasos */
+    .workflow-steps h3 {
+        font-size: 1.3em; /* Tamaño del título */
+        margin-top: 30px; /* Más espacio arriba */
+        margin-bottom: 10px; /* Espacio debajo */
+        padding-bottom: 10px; /* Espacio para un posible separador */
+        position: relative;
+    }
+
+    /* Añade un separador visual entre pasos */
+    .workflow-steps h3:not(:first-child) {
+        border-top: 1px solid #ccc; /* Línea separadora */
+        padding-top: 30px;
+    }
+
+    .workflow-steps p {
+        font-size: 0.9em; /* Texto más pequeño pero legible */
+        margin-bottom: 30px; /* Más espacio entre pasos */
+        line-height: 1.6; /* Mejora la legibilidad */
+    }
+
+    .carousel-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .workflow {
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .carousel {
+        max-width: 100%;
+        aspect-ratio: 4 / 3; /* Proporción más cuadrada */
+    }
+
+    .workflow-steps h3 {
+        font-size: 1.2em;
+        margin-top: 25px;
+        margin-bottom: 8px;
+    }
+
+    .workflow-steps p {
+        font-size: 0.85em;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .carousel-button {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+
+
+
+
+
+.pricing {
+    background: linear-gradient(135deg, #a3bffa, #6b9eff);
+    padding: 60px 20px;
+    text-align: center;
+    color: #fff;
+}
+
+.pricing-title {
+    font-size: 2.5em;
+    margin: 0 0 10px;
+    color: #1a2b49;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.pricing-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.pricing-table {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
+    gap: 20px;
+}
+
+.plan {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 20px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.plan:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+.plan-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1a2b49;
+}
+
+.price span {
+    font-size: 1rem;
+    font-weight: normal;
+    margin-left: 5px;
+    color: #555;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra las características */
+}
+
+.features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+.features li:last-child {
+    border-bottom: none;
+}
+
+.plan-button {
+    background: linear-gradient(135deg, #1a2b49, #2a4d7e);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1em;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}
+
+.plan-button:hover {
+    background: linear-gradient(135deg, #2a4d7e, #1a2b49);
+    transform: scale(1.05);
+}
+
+.plan:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.pricing-table {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.plan-title {
+    font-size: 1.8em;
+    margin: 0 0 20px;
+    color: #1a2b49;
+}
+
+.plan {
+    background: #fff;
+    color: #1a2b49;
+    padding: 30px;
+    width: 250px;
+    
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.plan button {
+    background-color: #d9d9d9;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+
+footer {
+    background-color: #1a2b49;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    margin: 10px;
+}
+
+.footer-section h4 {
+    margin-top: 0;
+}
+
+footer a {
+    color: #00c4b4;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.map-image {
+    max-width: 200px;
+}
+
+.copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <div class="login-container">
+        <h2>Registro</h2>
+        <input type="text" placeholder="User">
+        <input type="email" placeholder="E-mail">
+        <input type="password" placeholder="Password">
+        <input type="password" placeholder="Confirm Password">
+        <br>
+        <button class="btn-login">Sig in</button>
+        <br><br>
+        <p>¿Ya tienes cuenta? <a href="/login">Log in</a></p>
+    </div>
+    <br>
+    <script>
+        document.querySelector('.btn').addEventListener('click', function() {
+            alert('Registro en proceso...');
+        });
+    </script>
+{% endblock %}

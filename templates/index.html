@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+    <div class="main-title">
+        <h1>Sigma Security</h1>
+        <p>Sistema de soporte para Vulnerabilidades y Amenazas basado en Inteligencia Artificial</p>
+        <div class="cards">
+            <div class="card">
+                ¡Comienza ya! <br> Describe tu proyecto y comienza a recibir sugerencias sobre seguridad por parte de nuestra Inteligencia Artificial.
+            </div>
+            <div class="card">
+                Vulnerabilidades <br> Nuestro modelo se basa en miles de vulnerabilidades conocidas y en la información más reciente de la industria.
+            </div>
+        </div>
+        <div class="workflow">
+            <div class="img-workflow">
+                <!-- Contenedor del carrusel -->
+                <div class="carousel">
+                    <!-- Imágenes del carrusel -->
+                    <div class="carousel-images">
+                        <img src="{{ url_for('static', filename='images/1.png') }}" alt="Imagen 1" class="carousel-image">
+                        <img src="{{ url_for('static', filename='images/2.png') }}" alt="Imagen 2" class="carousel-image">
+                        <img src="{{ url_for('static', filename='images/3.png') }}" alt="Imagen 3" class="carousel-image">
+                    </div>
+                    <!-- Botones de navegación -->
+                    <button class="carousel-button prev">❮</button>
+                    <button class="carousel-button next">❯</button>
+                </div>
+            </div>
+            <div class="workflow-steps">
+                <h3>1. Describe tu proyecto</h3>
+                <p>Describe tu proyecto usando nuestro chat.</p>
+                <h3>2. Recibe sugerencias</h3>
+                <p>Nuestra IA buscará vulnerabilidades que puedan interesarte.</p>
+                <h3>3. Más detalles</h3>
+                <p>Sigue hablando con la IA para obtener más información.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="pricing">
+      <h2 class="pricing-title">Tabla de precios</h2>
+      <p class="pricing-subtitle">Elige la modalidad que mejor se adapte a tus necesidades.</p>
+      <div class="pricing-table">
+          <div class="plan" style="background-color: #f0f0f0;">
+              <h3 class="plan-title">Básico</h3>
+              <div class="price">0 €<span>/mes</span></div>
+              <ul class="features">
+                  <li>1 proyecto</li>
+                  <li>10 sugerencias</li>
+              </ul>
+              <button class="plan-button">Comenzar</button>
+          </div>
+          <div class="plan recommended" style="background-color: #f0f0f0;">
+              <h3 class="plan-title">Profesional</h3>
+              <div class="price">19,99 €<span>/mes</span></div>
+              <ul class="features">
+                  <li>10 proyectos</li>
+                  <li>100 sugerencias</li>
+                  <li>Soporte por chat</li>
+                  <li>Acceso a la API</li>
+              </ul>
+              <button class="plan-button">Comenzar</button>
+          </div>
+          <div class="plan" style="background-color: #f0f0f0;">
+              <h3 class="plan-title">Empresarial</h3>
+              <div class="price">49,99 €<span>/mes</span></div>
+              <ul class="features">
+                  <li>100 proyectos</li>
+                  <li>Sugerencias ilimitadas</li>
+                  <li>Soporte por chat</li>
+                  <li>Acceso por teléfono</li>
+                  <li>Acceso a la API</li>
+              </ul>
+              <button class="plan-button">Comenzar</button>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    const images = document.querySelectorAll('.carousel-image');
+    const prevButton = document.querySelector('.carousel-button.prev');
+    const nextButton = document.querySelector('.carousel-button.next');
+    
+    let currentIndex = 0;
+
+    function showImage(index) {
+        if (!images.length) return; // Salir si no hay imágenes
+
+        // Asegurarse de que el índice esté dentro de los límites
+        currentIndex = (index + images.length) % images.length;
+
+        // Ocultar todas las imágenes
+        images.forEach(img => img.classList.remove('active'));
+        // Mostrar la imagen actual
+        images[currentIndex].classList.add('active');
+    }
+
+    // Verificar si las imágenes están cargadas y mostrar la primera
+    document.addEventListener('DOMContentLoaded', () => {
+        if (images.length > 0) {
+            showImage(currentIndex);
+        } else {
+            console.error('No se encontraron imágenes en el carrusel.');
+        }
+    });
+
+    prevButton.addEventListener('click', () => showImage(currentIndex - 1));
+    nextButton.addEventListener('click', () => showImage(currentIndex + 1));
+</script>
+{% endblock %}

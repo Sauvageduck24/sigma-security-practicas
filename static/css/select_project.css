@@ -1,0 +1,91 @@
+/* Fondo con degradado azul */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(180deg, #d6dff5, #8bb3f4);
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.selection-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+/* Título principal */
+h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Tarjeta central */
+.project-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Texto dentro de la tarjeta */
+.project-card p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Contenedor de botones */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Botones circulares */
+.circle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(45deg, #007bff, #6610f2);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Efectos al pasar el mouse */
+.circle-btn:hover {
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.8);
+    transform: scale(1.1);
+}
+
+/* Efectos al hacer clic */
+.circle-btn:active {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 1);
+}
+
+/* Información del usuario */
+.user-info {
+    background: rgba(0, 123, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 16px;
+    color: #0056b3;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Alinea los iconos y el texto */
+.user-info p {
+    margin: 5px 0;
+}

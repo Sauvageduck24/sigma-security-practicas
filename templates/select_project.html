@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select_project.css') }}">
+
+    <div class="selection-container">
+        <h1>Selección de Proyectos</h1>
+        
+        <div class="user-info">
+            <p>👤 <strong>Usuario:</strong> Nombre del usuario</p>
+            <p>⏳ <strong>Último acceso:</strong> 16 de marzo de 2025</p>
+            <p>📌 <strong>Último proyecto editado:</strong> Proyecto XYZ</p>
+        </div>
+
+        <div class="project-card">
+            <p>Elige un proyecto para continuar.</p>
+            <div class="button-container">
+                <button class="circle-btn">1</button>
+                <button class="circle-btn">2</button>
+                <button class="circle-btn">3</button>
+                <button class="circle-btn">+</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
