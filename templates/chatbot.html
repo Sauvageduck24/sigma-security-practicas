@@ -3,16 +3,17 @@
 {% block content %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
 
     <!-- Mensaje de alerta -->
-    <div class="container mt-10 " style="background-color: #D9D9D9;">
+    <div class="container mt-10 color_d9">
         <div class="alert bg-warning bg-opacity-20 alert-warning ">
             <strong>Atención!</strong> Mensaje de alerta para indicar que se ha podido producir un error (<a href="#">ver detalles</a>).
         </div>
     </div>
 
     <!-- Contenedor principal -->
-    <div class="container-fluid mt-10 m-3 p-3" style="background-color: #D9D9D9;">
+    <div class="container-fluid mt-10 m-3 p-3 color_d9">
         <div class="row">
             <!-- Lista de proyectos -->
             <div class="col-11 col-md-2 mb-3">
@@ -33,30 +34,21 @@
             </div>
 
             <!-- Sección de chat -->
-            <div class="col-11 col-md-9 " style="background-color: #D9D9D9;">
+            <div class="col-11 col-md-9 color_d9">
                 <div class="card ">
                     <div class="card-body chat-box m-0 p-0">
                         <div class="d-flex align-items-start mb-3">
                             <div class="mensaje_bot">Hola! Soy un bot, ¿en qué puedo ayudarte?</div>
                         </div>
-                        <div class="d-flex justify-content-end mb-3">
+                        <!--<div class="d-flex justify-content-end mb-3">
                             <div class="mensaje_persona">Estoy realizando una aplicación web para recoger vulnerabilidades.</div>
-                        </div>
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="mensaje_bot">Antes de continuar, dime a que te dedicas.</div>
-                        </div>
-                        <div class="d-flex justify-content-end mb-3">
-                            <div class="mensaje_persona">Soy trabajador de una empresa de finanzas y soy el encargado del apartado cibernetico.</div>
-                        </div>
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="mensaje_bot">Vale, yo te ayudare con tu trabajo.</div>
-                        </div>
+                        </div>-->
            
                     </div>
                     <div class="card-footer " >
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Escribe tu mensaje...">
-                            <button class="btn btn-primary" style="background-color: #1A2B49;">Enviar</button>
+                            <input type="text" id="mensajeInput" class="form-control" placeholder="Escribe tu mensaje..." autofocus>
+                            <button id="enviarBtn" class="btn btn-primary" style="background-color: #1A2B49;">Enviar</button>
                         </div>
                     </div>
                 </div>
