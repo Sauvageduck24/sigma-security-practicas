@@ -15,24 +15,30 @@ body {
 .card-body {
     min-height: 300px; /* Evita que el chat sea demasiado pequeño */
 }
+
+.mensaje_bot, .mensaje_persona {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+    margin-bottom: 10px;
+    text-align: left; /* Alinea el texto a la izquierda */
+}
+
 .mensaje_bot {
-
-    background-color: #A9C3E8;
-    color: rgb(0, 0, 0);
-    padding: 8px 12px;
-    border-radius: 8px; /* Bordes redondeados */
-    max-width: 80%; /* Para evitar que el mensaje sea demasiado ancho */
-    display: inline-block; /* Para que se ajuste al contenido */
+    background-color: #d9e6f2;
+    color: #333;
+    margin-left: 10px; /* Alinea a la izquierda */
 }
+
 .mensaje_persona {
-
-    background-color: #274880;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px; /* Bordes redondeados */
-    max-width: 80%; /* Para evitar que el mensaje sea demasiado ancho */
-    display: inline-block; /* Para que se ajuste al contenido */
+    background-color: #1A2B49;
+    color: #fff;
+    margin-left: 10px; /* Alinea a la izquierda */
 }
-.color_d9{
-    background-color: #D9D9D9;
+
+.icono {
+    font-size: 24px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
 }
