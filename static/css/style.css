@@ -21,8 +21,6 @@ main {
     flex: 1;
 }
 
-
-
 /* Línea de neón debajo del header */
 header {
     background-color: #1a2b49;
@@ -34,17 +32,9 @@ header {
 }
 
 /* Aseguramos que no haya animación en los enlaces del header */
-header .nav-link, .nav-link {
-    color: white !important;
-    transition: none !important;  /* Elimina cualquier transición */
-    text-decoration: none !important; /* Asegura que no haya subrayado */
-}
 
-/* Desactiva cualquier posible transición en hover */
-header .nav-link:hover, .nav-link:hover {
-    color: white !important;
-    text-decoration: none !important;
-    transition: none !important;
+.navbar-nav .nav-link.active {
+    color: #00c4b4 !important; /* Color específico para "Inicio" */
 }
 
 header .btn-neon:hover {
@@ -67,7 +57,6 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
-    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff;
 }
 
 footer .nav-link {
@@ -78,6 +67,9 @@ footer .text-body-secondary {
     color: white !important;
 }
 
+footer .texto_esp_abajo{
+    margin-bottom: 30px
+}
 
 .alert {
     background-color: #f4a261; /* Orange background */
@@ -260,53 +252,32 @@ footer .text-body-secondary {
 }
 
 /* Media Queries para pantallas más pequeñas */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .workflow {
-        flex-direction: column; /* Apila el carrusel y los pasos */
-        align-items: center;
-        padding: 20px;
-        gap: 30px; /* Más espacio entre carrusel y pasos */
-    }
-
-    .img-workflow {
-        width: 100%;
-        justify-content: center;
+        padding: 15px;
+        gap: 20px;
     }
 
     .carousel {
         max-width: 100%;
-        aspect-ratio: 5 / 3;
+        aspect-ratio: 4 / 3; /* Proporción más cuadrada */
     }
 
-    .workflow-steps {
-        max-width: 100%;
-        text-align: center;
-    }
-
-    /* Ajustes para los pasos */
     .workflow-steps h3 {
-        font-size: 1.3em; /* Tamaño del título */
-        margin-top: 30px; /* Más espacio arriba */
-        margin-bottom: 10px; /* Espacio debajo */
-        padding-bottom: 10px; /* Espacio para un posible separador */
-        position: relative;
-    }
-
-    /* Añade un separador visual entre pasos */
-    .workflow-steps h3:not(:first-child) {
-        border-top: 1px solid #ccc; /* Línea separadora */
-        padding-top: 30px;
+        font-size: 1.2em;
+        margin-top: 25px;
+        margin-bottom: 8px;
     }
 
     .workflow-steps p {
-        font-size: 0.9em; /* Texto más pequeño pero legible */
-        margin-bottom: 30px; /* Más espacio entre pasos */
-        line-height: 1.6; /* Mejora la legibilidad */
+        font-size: 0.85em;
+        margin-bottom: 25px;
+        line-height: 1.5;
     }
 
     .carousel-button {
-        font-size: 14px;
-        padding: 8px;
+        font-size: 12px;
+        padding: 6px;
     }
 }
 
