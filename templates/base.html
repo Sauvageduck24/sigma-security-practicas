@@ -22,7 +22,7 @@
                     
 
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Inicio
+                    <a class="nav-link active" href="/">Inicio
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
@@ -37,9 +37,9 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center me-3">
-                <a href="#"><img src="{{ url_for('static', filename='images/correo.png') }}" width="20" height="20" class="me-2"></a>
-                <a href="#"><img src="{{ url_for('static', filename='images/persona.png') }}" width="20" height="20" class="me-2"></a>
-                <a class="nav-link" href="#">Mi cuenta</a>
+                <a href=""><img src="{{ url_for('static', filename='images/correo.png') }}" width="20" height="20" class="me-2"></a>
+                <a href="/login"><img src="{{ url_for('static', filename='images/persona.png') }}" width="20" height="20" class="me-2"></a>
+                <a class="nav-link" href="/select-project">Mi cuenta</a>
             </div>
             <form class="d-flex">
                 <input class="form-control me-sm-2" type="search" placeholder="Describe tu proyecto">
