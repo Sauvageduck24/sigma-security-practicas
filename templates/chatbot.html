@@ -6,11 +6,13 @@
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
 
     <!-- Mensaje de alerta -->
-    <div class="container mt-10 color_d9">
-        <div class="alert bg-warning bg-opacity-20 alert-warning ">
-            <strong>Atención!</strong> Mensaje de alerta para indicar que se ha podido producir un error (<a href="#">ver detalles</a>).
-        </div>
-    </div>
+    <div class="alert alert-dismissible alert-warning">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <h4 class="alert-heading">Atención!</h4>
+        <p class="mb-0">Mensaje de alerta para indicar que se ha podido producir un error <a href="#" class="alert-link">(ver detalles)</a>.</p>
+      </div>
+
+    <br><br><br><br>
 
     <!-- Contenedor principal -->
     <div class="container-fluid mt-10 m-3 p-3 color_d9">
