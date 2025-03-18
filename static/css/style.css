@@ -70,6 +70,29 @@ footer .text-body-secondary {
 footer .texto_esp_abajo{
     margin-bottom: 30px
 }
+.footer-section {
+    margin: 10px;
+    text-align: left;
+    color: #18bc9c
+}
+
+.footer-section h5 {
+    margin-top: 0;
+    margin: 10px;
+    color: #ffffff
+}
+.footer-section p {
+    margin-top: 0;
+    margin: 10px;
+}
+.footer-section .divider {
+    border-top: 1px solid rgba(9, 9, 9, 0.521);
+    margin: 10px 0;
+    width: 100%;
+}
+.nav-link {
+    color: white !important;
+}
 
 .alert {
     background-color: #f4a261; /* Orange background */
