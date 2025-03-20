@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         <h4 class="alert-heading">Atención!</h4>
         <p class="mb-0">Mensaje de alerta para indicar que se ha podido producir un error <a href="#" class="alert-link">(ver detalles)</a>.</p>
-      </div>
+    </div>
 
     <br><br><br><br>
 
@@ -19,27 +19,32 @@
         <div class="row">
             <!-- Lista de proyectos -->
             <div class="col-11 col-md-2 mb-3">
-                <div class="card" style="background-color: #1A2B49;">
-                    <div class="card-header d-flex justify-content-between align-items-center text-white">
-                        <span>Proyectos</span>
-                        <button class="btn btn-success btn-sm">+</button>
+                <button class="btn btn-primary d-md-none mb-3" style="background-color: white; color: black; outline: none; border: none;" type="button" data-bs-toggle="collapse" data-bs-target="#proyectosCollapse" aria-expanded="false" aria-controls="proyectosCollapse">
+                    Proyectos
+                </button>
+                <div class="collapse d-md-block" id="proyectosCollapse">
+                    <div class="card" style="background-color: #1A2B49;">
+                        <div class="card-header d-flex justify-content-between align-items-center text-white">
+                            <span>Proyectos</span>
+                            <button class="btn btn-success btn-sm">+</button>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Proyecto 1</li>
+                            <li class="list-group-item">Proyecto 2</li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Proyecto 3
+                                <button class="btn btn-danger btn-sm">🗑</button>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Proyecto 1</li>
-                        <li class="list-group-item">Proyecto 2</li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Proyecto 3
-                            <button class="btn btn-danger btn-sm">🗑</button>
-                        </li>
-                    </ul>
                 </div>
             </div>
 
             <!-- Sección de chat -->
             <div class="col-11 col-md-9 color_d9">
-                <div class="card ">
+                <div class="card">
                     <div class="card-body chat-box m-0 p-0"></div>
-                    <div class="card-footer " >
+                    <div class="card-footer">
                         <div class="input-group">
                             <input type="text" id="mensajeInput" class="form-control" placeholder="Escribe tu mensaje..." autofocus>
                             <button id="enviarBtn" class="btn btn-primary" style="background-color: #1A2B49;">Enviar</button>

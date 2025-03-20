@@ -274,70 +274,56 @@ footer .texto_esp_abajo{
     margin-bottom: 0;
 }
 
-/* Media Queries para pantallas más pequeñas */
-@media (max-width: 480px) {
-    .workflow {
-        padding: 15px;
-        gap: 20px;
-    }
-
-    .carousel {
-        max-width: 100%;
-        aspect-ratio: 4 / 3; /* Proporción más cuadrada */
-    }
-
-    .workflow-steps h3 {
-        font-size: 1.2em;
-        margin-top: 25px;
-        margin-bottom: 8px;
-    }
-
-    .workflow-steps p {
-        font-size: 0.85em;
-        margin-bottom: 25px;
-        line-height: 1.5;
-    }
-
-    .carousel-button {
-        font-size: 12px;
-        padding: 6px;
-    }
-}
-
-@media (max-width: 480px) {
-    .workflow {
-        padding: 15px;
-        gap: 20px;
-    }
-
-    .carousel {
-        max-width: 100%;
-        aspect-ratio: 4 / 3; /* Proporción más cuadrada */
-    }
-
-    .workflow-steps h3 {
-        font-size: 1.2em;
-        margin-top: 25px;
-        margin-bottom: 8px;
-    }
-
-    .workflow-steps p {
-        font-size: 0.85em;
-        margin-bottom: 25px;
-        line-height: 1.5;
-    }
-
-    .carousel-button {
-        font-size: 12px;
-        padding: 6px;
-    }
-}
-
 .pricing {
     background-color: #95A5A6;
     padding: 40px 20px;
     text-align: center;
     clip-path: ellipse(100% 90% at 50% 90%);
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 960px) {
+    .workflow {
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .carousel {
+        max-width: 100%;
+        aspect-ratio: 4 / 3; /* Proporción más cuadrada */
+    }
+
+    .workflow-steps h3 {
+        font-size: 1.2em;
+        margin-top: 25px;
+        margin-bottom: 8px;
+    }
+
+    .workflow-steps p {
+        font-size: 0.85em;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    .carousel-button {
+        font-size: 12px;
+        padding: 6px;
+    }
+    .main-title {
+        clip-path: ellipse(100% 60% at 50% 40%); /* Ajusta el tamaño de la elipse */
+        padding: 30px; /* Ajusta el padding */
+    }
+
+    .main-title h1 {
+        font-size: 2.5em; /* Ajusta el tamaño del texto */
+    }
+
+    .main-title p {
+        font-size: 1em; /* Ajusta el tamaño del texto */
+    }
+    .pricing {
+        clip-path: ellipse(100% 80% at 50% 80%);
+    }
 }
 
 .pricing-title {

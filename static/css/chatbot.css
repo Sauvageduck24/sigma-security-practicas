@@ -42,3 +42,69 @@ body {
     display: flex;
     align-items: center;
 }
+
+/* Cambiar el color del desplegable de proyectos */
+#proyectosCollapse .card {
+    background-color: #ffffff; /* Cambia el color de fondo a blanco */
+}
+
+#proyectosCollapse .card-header {
+    background-color: #ffffff; /* Cambia el color de fondo del encabezado a blanco */
+    color: #000; /* Cambia el color del texto a negro */
+}
+
+#proyectosCollapse .list-group-item {
+    background-color: #ffffff; /* Cambia el color de fondo de los elementos de la lista a blanco */
+    color: #000; /* Cambia el color del texto a negro */
+}
+
+/* Quitar el borde azul del botón */
+.btn-primary.d-md-none {
+    outline: none; /* Quita el borde de enfoque */
+    box-shadow: none; /* Quita el borde de sombra */
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+    .mensaje_bot, .mensaje_persona {
+        max-width: 100%; /* Asegura que los mensajes usen todo el ancho disponible en móviles */
+    }
+
+    .card-body {
+        min-height: 200px; /* Ajusta la altura mínima del chat en móviles */
+    }
+
+    .input-group {
+        flex-direction: row; /* Alinea los elementos de entrada horizontalmente en móviles */
+        align-items: center; /* Alinea verticalmente los elementos en el centro */
+    }
+
+    .input-group input {
+        margin-bottom: 0; /* Elimina el margen inferior del campo de entrada en móviles */
+        flex: 1; /* Permite que el campo de entrada ocupe el espacio disponible */
+        width: auto; /* Asegura que el campo de entrada use el ancho disponible */
+        box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+    }
+
+    .input-group button {
+        width: auto; /* Permite que el botón use el ancho necesario */
+        margin-left: 10px; /* Añade un margen izquierdo al botón */
+    }
+
+    .icono {
+        font-size: 20px; /* Ajusta el tamaño del icono en móviles */
+        margin-right: 5px; /* Ajusta el margen del icono en móviles */
+    }
+
+    .btn-primary.d-md-none {
+        width: 100%; /* Asegura que el botón use todo el ancho disponible en móviles */
+    }
+
+    .collapse.d-md-block {
+        display: none; /* Oculta el contenedor colapsable en móviles */
+    }
+
+    .collapse.show {
+        display: block; /* Muestra el contenedor colapsable cuando está expandido */
+    }
+}
