@@ -22,5 +22,10 @@ def chat_bot():
 def select_project():
     return render_template("select_project.html")
 
+@app.route("/suma/<int:num1>/<int:num2>")
+def suma(num1,num2):
+    print(num1, num2,num1+num2)
+    return render_template("suma.html",num1=num1,num2=num2,suma=num1+num2)
+
 if __name__ == "__main__":
     app.run(debug=True)
