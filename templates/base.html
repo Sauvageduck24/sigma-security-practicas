@@ -11,8 +11,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" ></script>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark" style="background-color:rgb(44, 62, 80)">
         <div class="container-fluid" style="background-color:rgb(44, 62, 80)">
-            <img src="{{ url_for('static', filename='images/security-card-svgrepo-com.svg') }}" class="navbar-brand" width="50" height="50">
-            <img src="{{ url_for('static', filename='images/letras.png') }}" class="navbar-brand" width="105" height="40" margin-right: 550px>
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/security-card-svgrepo-com.svg') }}" class="navbar-brand" width="50" height="50">
+            </a>
+            <a href="/">
+                <img src="{{ url_for('static', filename='images/letras.png') }}" class="navbar-brand" width="105" height="40" margin-right: 550px>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

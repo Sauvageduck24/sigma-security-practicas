@@ -1,5 +1,7 @@
 body {
     background-color: #D6E4F0;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .chat-box {

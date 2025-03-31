@@ -102,7 +102,7 @@ footer .texto_esp_abajo{
     font-weight: normal; /* Normal weight for the general text */
     position: fixed; /* Fixed position at the top */
     width: 90%; /* Full width by default */
-    margin: 10px auto; /* Center the alert with margin (10px top margin) */
+    margin: 5% auto; /* Center the alert with margin (10px top margin) */
     left: 0; /* Ensure it starts from the left */
     right: 0; /* Ensure it stretches to the right for centering */
     z-index: 1000; /* Ensure it appears above other content */
@@ -490,6 +490,15 @@ footer a {
 
 .map-image {
     max-width: 200px;
+}
+
+nav.navbar {
+    position: fixed; /* Fija la cabecera en la parte superior */
+    top: 0; /* Asegura que esté en la parte superior */
+    left: 0; /* Asegura que esté alineada a la izquierda */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    z-index: 1030; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Añade una sombra para destacar la cabecera */
 }
 
 .copyright {
