@@ -2,11 +2,12 @@ body {
     background-color: #D6E4F0;
     overflow-x: hidden;
     box-sizing: border-box;
+    margin-top: 8%;
 }
 
 .chat-box {
     max-height: 400px; /* Limita la altura y permite el scroll si hay muchos mensajes */
-    overflow-y: auto;
+    overflow-y: auto
 }
 
 .card {
@@ -15,7 +16,7 @@ body {
 }
 
 .card-body {
-    min-height: 300px; /* Evita que el chat sea demasiado pequeño */
+    min-height: 300px; /* Evita que el chat sea demasiado pequeÃ±o */
 }
 
 .mensaje_bot, .mensaje_persona {
@@ -45,68 +46,118 @@ body {
     align-items: center;
 }
 
+.proyecto-activo {
+    background-color: blue !important;
+    font-weight: bold;
+    color: black;
+}
+
+
+
 /* Cambiar el color del desplegable de proyectos */
 #proyectosCollapse .card {
-    background-color: #ffffff; /* Cambia el color de fondo a blanco */
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 #proyectosCollapse .card-header {
-    background-color: #ffffff; /* Cambia el color de fondo del encabezado a blanco */
-    color: #000; /* Cambia el color del texto a negro */
+        background-color: #1A2B49;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#proyectosCollapse .list-group-item {
-    background-color: #ffffff; /* Cambia el color de fondo de los elementos de la lista a blanco */
-    color: #000; /* Cambia el color del texto a negro */
+#proyectosCollapse .btn-success {
+    background-color: #28a745;
+    border: none;
+    transition: background-color 0.3s ease;
 }
 
-/* Quitar el borde azul del botón */
-.btn-primary.d-md-none {
-    outline: none; /* Quita el borde de enfoque */
-    box-shadow: none; /* Quita el borde de sombra */
+#proyectosCollapse .btn-success:hover {
+    background-color: #218838;
 }
 
-/* Media queries para dispositivos móviles */
+#listaProyectos .list-group-item {
+    background-color: #f8f9fa;
+    color: #333;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0;
+    padding: 10px 15px;
+    transition: background-color 0.2s ease;
+}
+
+#listaProyectos .list-group-item:last-child {
+    border-bottom: none;
+}
+
+#listaProyectos .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+#listaProyectos .btn-danger:hover {
+    background-color: #c82333;
+}
+
+.app-container {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+}
+
+
+
 @media (max-width: 768px) {
-    .mensaje_bot, .mensaje_persona {
-        max-width: 100%; /* Asegura que los mensajes usen todo el ancho disponible en móviles */
+    .color_d9 {
+        padding: 0.5rem;
     }
 
-    .card-body {
-        min-height: 200px; /* Ajusta la altura mínima del chat en móviles */
+    #proyectosCollapse .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 
-    .input-group {
-        flex-direction: row; /* Alinea los elementos de entrada horizontalmente en móviles */
-        align-items: center; /* Alinea verticalmente los elementos en el centro */
+    #proyectosCollapse .btn-success {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.5rem;
     }
 
-    .input-group input {
-        margin-bottom: 0; /* Elimina el margen inferior del campo de entrada en móviles */
-        flex: 1; /* Permite que el campo de entrada ocupe el espacio disponible */
-        width: auto; /* Asegura que el campo de entrada use el ancho disponible */
-        box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+    #listaProyectos .list-group-item {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .input-group button {
-        width: auto; /* Permite que el botón use el ancho necesario */
-        margin-left: 10px; /* Añade un margen izquierdo al botón */
+    #listaProyectos .btn-danger {
+        margin-top: 0.5rem;
+        align-self: flex-end;
     }
 
-    .icono {
-        font-size: 20px; /* Ajusta el tamaño del icono en móviles */
-        margin-right: 5px; /* Ajusta el margen del icono en móviles */
+    .btn-proyectos {
+        background-color: white;
+        color: black;
+        border: 2px solid #1A2B49;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        border-radius: 8px;
     }
 
-    .btn-primary.d-md-none {
-        width: 100%; /* Asegura que el botón use todo el ancho disponible en móviles */
-    }
-
-    .collapse.d-md-block {
-        display: none; /* Oculta el contenedor colapsable en móviles */
-    }
-
-    .collapse.show {
-        display: block; /* Muestra el contenedor colapsable cuando está expandido */
+    .btn-proyectos:active,
+    .btn-proyectos:focus {
+        background-color: #1A2B49;
+        color: white;
+        outline: none;
+        box-shadow: 0 0 10px rgba(26, 43, 73, 0.3);
     }
 }

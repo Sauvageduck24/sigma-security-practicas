@@ -19,10 +19,8 @@ Base = declarative_base()
 
 entorno = os.getenv('ENTORNO', 'local')
 
-if entorno == 'produccion':
-    uri = 'mysql+pymysql://sauvageduck24:sigmasecurity@10.0.5.74.mysql.pythonanywhere-services.com/sauvageduck24$sigmasecurity'
-else:
-    uri = 'mysql+pymysql://root:1234@localhost/sigma_security'
+#uri = 'mysql+pymysql://sauvageduck24:sigmasecurity@sauvageduck24.mysql.pythonanywhere-services.com/sauvageduck24$sigmasecurity'
+uri = 'mysql+pymysql://root:1234@localhost/sigma_security'
 
 engine = create_engine(uri)
 

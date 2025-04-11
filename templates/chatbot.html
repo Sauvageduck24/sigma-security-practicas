@@ -4,14 +4,14 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/proyectos.js') }}"></script>
 
-    <br><br><br><br>
-
+    
     <!-- Contenedor principal -->
     <div class="container-fluid mt-10 m-3 p-3 color_d9">
         <div class="row">
             <!-- Lista de proyectos -->
-            <div class="col-11 col-md-2 mb-3">
+            <div class="col-12 col-md-3 mb-3">
                 <button class="btn btn-primary d-md-none mb-3" style="background-color: white; color: black; outline: none; border: none;" type="button" data-bs-toggle="collapse" data-bs-target="#proyectosCollapse" aria-expanded="false" aria-controls="proyectosCollapse">
                     Proyectos
                 </button>
@@ -19,22 +19,17 @@
                     <div class="card" style="background-color: #1A2B49;">
                         <div class="card-header d-flex justify-content-between align-items-center text-white">
                             <span>Proyectos</span>
-                            <button class="btn btn-success btn-sm">+</button>
+                            <button class="btn btn-success btn-sm" onclick="agregarProyecto()">+</button>
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Proyecto 1</li>
-                            <li class="list-group-item">Proyecto 2</li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Proyecto 3
-                                <button class="btn btn-danger btn-sm">🗑</button>
-                            </li>
+                        <ul class="list-group list-group-flush" id="listaProyectos">
+                            <!-- Proyectos se generarán aquí -->
                         </ul>
                     </div>
                 </div>
             </div>
-
+    
             <!-- Sección de chat -->
-            <div class="col-11 col-md-9 color_d9">
+            <div class="col-12 col-md-9 color_d9">
                 <div class="card">
                     <div class="card-body chat-box m-0 p-0"></div>
                     <div class="card-footer">
@@ -49,5 +44,4 @@
     </div>
 
     <br>
-
 {% endblock %}
