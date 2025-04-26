@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <br><br><br>
+
+    <h1>Crear nuevo usuario</h1>
+    <form action="{{ url_for('crear_admin') }}" method="post">
+        <label for="nombre">Nombre de usuario:</label><br>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="contrasenya">Contraseña:</label><br>
+        <input type="password" id="contrasenya" name="contrasenya" required><br><br>
+
+        <button type="submit">Crear Usuario</button>
+    </form>
+
+    <br><br>
+
+{% endblock %}

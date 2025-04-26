@@ -55,11 +55,11 @@ def crear_admin():
         contrasenya_hash = generate_password_hash(contrasenya)
         admin_user = User(nombre=nombre, contrasenya=contrasenya_hash)
 
-        session.add(admin_user)
-        session.commit()
+        db.session.add(admin_user)
+        db.session.commit()
 
-        flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
-        return redirect(url_for("login"))
+        flash("Usuario creado exitosamente", "success")
+        return redirect(url_for('admin_dashboard'))
 
     return render_template("crear_admin.html")
 

@@ -7,6 +7,8 @@ from sqlalchemy import text
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'  # Necesario para sesiones
 
+app = Flask(__name__, template_folder='../templates',static_folder='../static')
+
 init_db(app)
 
 # Configurar Flask-Login
@@ -61,7 +63,7 @@ def crear_admin():
         flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
         return redirect(url_for("login"))
 
-    return render_template("crear_admin.html")
+    return render_template("crear_usuario.html")
 
 @app.route("/")
 def home():
