@@ -69,6 +69,9 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("sesion_iniciada"))
+
     if request.method == "POST":
         nombre = request.form["nombre"]
         contrasenya = request.form["contrasenya"]
@@ -82,6 +85,11 @@ def login():
             flash("Credenciales incorrectas", "danger")
 
     return render_template("login.html")
+
+@app.route("/sesion_iniciada")
+@login_required
+def sesion_iniciada():
+    return render_template("sesion_iniciada.html")
 
 @app.route("/logout")
 @login_required
