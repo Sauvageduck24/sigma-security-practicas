@@ -4,10 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import db, init_db, User,Proyecto
 from sqlalchemy import text
 
-app = Flask(__name__)
-app.secret_key = 'super_secret_key'  # Necesario para sesiones
-
 app = Flask(__name__, template_folder='../templates',static_folder='../static')
+app.secret_key = 'super_secret_key'  # Necesario para sesiones
 
 init_db(app)
 
@@ -63,7 +61,7 @@ def crear_admin():
         flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
         return redirect(url_for("login"))
 
-    return render_template("crear_usuario.html")
+    return render_template("crear_admin.html")
 
 @app.route("/")
 def home():
