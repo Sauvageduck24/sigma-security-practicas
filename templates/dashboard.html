@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <br><br><br>
+
+    <h1>Usuarios registrados</h1>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Fecha de Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ usuario_actual.id }}</td>
+                <td>{{ usuario_actual.nombre }}</td>
+                <td>{{ usuario_actual.fecha_registro.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <h1>Proyectos registrados</h1>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proyecto in proyectos %}
+                <tr>
+                    <td>{{ proyecto.id }}</td>
+                    <td>{{ proyecto.nombre }}</td>
+                    <td>{{ proyecto.descripcion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{{ url_for('crear_usuario') }}">Crear nuevo usuario</a>
+    <br>
+    <a href="{{ url_for('crear_proyecto') }}">Crear nuevo proyecto</a>
+
+    <br><br>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <br><br><br>
+
+    <h1>Usuarios registrados</h1>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Fecha de Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in usuarios %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.nombre }}</td>
+                    <td>{{ user.fecha_registro.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{{ url_for('crear_usuario') }}">Crear nuevo usuario</a>
+
+    <br><br>
+
+{% endblock %}

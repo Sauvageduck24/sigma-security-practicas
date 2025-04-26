@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Usuario</title>
+</head>
+<body>
+    <h1>Perfil de {{ usuario.nombre }}</h1>
+
+    <h2>Tus Proyectos:</h2>
+    <ul>
+    {% for proyecto in proyectos %}
+        <li>{{ proyecto.nombre }} - {{ proyecto.descripcion }}</li>
+    {% else %}
+        <li>No tienes proyectos.</li>
+    {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+</body>
+</html>

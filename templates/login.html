@@ -1,20 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    <div class="login-container">
-        <h2>Log in</h2>
-        <input type="text" placeholder="User">
-        <input type="password" placeholder="Password">
-        <br>
-        <button class="btn-login">Log in</button>
-        <br><br>
-        <p>¿No tienes cuenta? <a href="/signin">Sign in</a></p>
-    </div>
-    <br>
-    <script>
-        document.querySelector('.btn').addEventListener('click', function() {
-            alert('Inicio de sesión en proceso...');
-        });
-    </script>
+    <h1>Iniciar sesión</h1>
+    <form method="post">
+        <label>Nombre de usuario:</label><br>
+        <input type="text" name="nombre" required><br><br>
+
+        <label>Contraseña:</label><br>
+        <input type="password" name="contrasenya" required><br><br>
+
+        <button type="submit">Entrar</button>
+    </form>
+
 {% endblock %}

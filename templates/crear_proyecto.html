@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Proyecto</title>
+</head>
+<body>
+    <h1>Crear Proyecto</h1>
+    <form action="{{ url_for('crear_proyecto') }}" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br><br>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="4" cols="50" required></textarea>
+        <br><br>
+        <button type="submit">Crear</button>
+    </form>
+</body>
+</html>
