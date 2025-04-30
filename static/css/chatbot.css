@@ -7,7 +7,7 @@ body {
 
 .chat-box {
     max-height: 400px; /* Limita la altura y permite el scroll si hay muchos mensajes */
-    overflow-y: auto
+    overflow-y: auto;
 }
 
 .card {

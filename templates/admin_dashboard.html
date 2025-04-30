@@ -16,9 +16,9 @@
         <tbody>
             {% for user in usuarios %}
                 <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.nombre }}</td>
-                    <td>{{ user.fecha_registro.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ user['id'] }}</td>
+                    <td>{{ user['nombre'] }}</td>
+                    <td>{{ user['fecha_registro'] }}</td>
                 </tr>
             {% endfor %}
         </tbody>

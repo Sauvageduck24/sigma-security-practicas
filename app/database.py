@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+from flask_praetorian import Praetorian
 from sqlalchemy.orm import declarative_base
 import os
 from dotenv import load_dotenv
@@ -14,9 +15,6 @@ load_dotenv()
 # Para Flask
 db = SQLAlchemy()
 
-# Para scripts externos (como generar_comprobar.py)
-Base = declarative_base()
-
 entorno = os.getenv('ENTORNO', 'local')
 
 #uri = 'mysql+pymysql://sauvageduck24:sigmasecurity@sauvageduck24.mysql.pythonanywhere-services.com/sauvageduck24$sigmasecurity'
@@ -24,17 +22,38 @@ uri = 'mysql+pymysql://root:1234@localhost/sigma_security'
 
 engine = create_engine(uri)
 
-class User(Base):
+class User(db.Model):
     __tablename__ = "user_account"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    nombre: Mapped[str] = mapped_column(String(50), nullable=False)
+    nombre: Mapped[str] = mapped_column(String(50), nullable=False)  # Este será tu "username"
     contrasenya: Mapped[str] = mapped_column(String(200), nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    #Rel 1-M
+
     proyectos: Mapped[List["Proyecto"]] = relationship(back_populates="creador", cascade="all, delete-orphan")
 
-class Proyecto(Base):
+    # Requerido por Flask-Praetorian:
+    @classmethod
+    def lookup(cls, username):
+        return cls.query.filter_by(nombre=username).first()
+
+    def identity(self):
+        return self.id
+
+    @classmethod
+    def identify(cls, id):
+        return cls.query.get(id)
+
+    # Esto le dice a Praetorian qué campo contiene la contraseña
+    @property
+    def rolenames(self):
+        return []  # O una lista con roles si los usas
+
+    @property
+    def password(self):
+        return self.contrasenya
+
+class Proyecto(db.Model):
     __tablename__ = "proyecto"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -46,6 +65,19 @@ class Proyecto(Base):
     creador_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     #Accedes a user desde proyectos
     creador: Mapped["User"] = relationship(back_populates="proyectos")
+    mensajes: Mapped[List["Mensaje"]] = relationship(back_populates="proyecto", cascade="all, delete-orphan") #mensajes de un proyecto
+
+class Mensaje(db.Model):
+    __tablename__ = "mensajes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    contenido: Mapped[str] = mapped_column(String(500), nullable=False)
+
+    proyecto_id: Mapped[int] = mapped_column(ForeignKey("proyecto.id"), nullable=False)
+    proyecto: Mapped["Proyecto"] = relationship(back_populates="mensajes")
+
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), nullable=False)
+    usuario: Mapped["User"] = relationship()
 
 def comprobar_y_crear_tablas():
     inspector = inspect(engine)
@@ -53,7 +85,8 @@ def comprobar_y_crear_tablas():
 
     tablas_objetivo = {
         "user_account": User,
-        "proyecto": Proyecto
+        "proyecto": Proyecto,
+        "mensajes": Mensaje
     }
 
     tablas_a_crear = []
@@ -67,7 +100,7 @@ def comprobar_y_crear_tablas():
 
     if tablas_a_crear:
         print("Creando tablas necesarias...")
-        Base.metadata.create_all(engine, tables=[modelo.__table__ for modelo in tablas_a_crear])
+        db.Model.metadata.create_all(engine, tables=[modelo.__table__ for modelo in tablas_a_crear])
         print("Tablas creadas.")
     else:
         print("No hay tablas nuevas para crear.")

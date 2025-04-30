@@ -43,33 +43,89 @@ document.addEventListener('DOMContentLoaded', function() {
         chatBox.scrollTop = chatBox.scrollHeight; // Desplazar hacia abajo el chat
     }
 
+    // function enviarUltimoMensajeJSON(mensaje) {
+    //     const xhr = new XMLHttpRequest();
+    //     xhr.open('POST', 'https://albertosalguero.eu.pythonanywhere.com/send-message', true);
+    //     xhr.setRequestHeader('Content-Type', 'application/json');
+
+    //     const json = JSON.stringify({ message: mensaje });
+
+    //     xhr.onreadystatechange = function() {
+    //         if (xhr.readyState === XMLHttpRequest.DONE) {
+    //             if (xhr.status === 200) {
+    //                 const respuesta = JSON.parse(xhr.responseText);
+    //                 mostrarMensaje(respuesta.message, 'mensaje_bot');
+    //             } else {
+    //                 console.error('Error en la solicitud:', xhr.statusText);
+    //             }
+    //         }
+    //     };
+
+    //     console.log(json);
+    //     xhr.send(json);
+    // }
+
     function enviarUltimoMensajeJSON(mensaje) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://albertosalguero.eu.pythonanywhere.com/send-message', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-
-        const json = JSON.stringify({ message: mensaje });
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    const respuesta = JSON.parse(xhr.responseText);
-                    mostrarMensaje(respuesta.message, 'mensaje_bot');
-                } else {
-                    console.error('Error en la solicitud:', xhr.statusText);
-                }
+        if (proyectoSeleccionadoId === null) {
+            alert('Selecciona un proyecto primero');
+            return;
+        }
+    
+        fetch('/chat/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: mensaje })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud: ' + response.statusText);
             }
-        };
-
-        console.log(json);
-        xhr.send(json);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta recibida:', data);
+    
+            mostrarMensaje(data.message, 'mensaje_bot');
+    
+            // 🔵 Guardar el mensaje de la persona
+            guardarMensajeEnBD(proyectoSeleccionadoId, mensaje, 'persona');
+    
+            // 🔵 Guardar el mensaje del bot
+            guardarMensajeEnBD(proyectoSeleccionadoId, data.message, 'bot');
+        })
+        .catch(error => {
+            console.error('Error al enviar mensaje:', error);
+        });
     }
 
+    function guardarMensajeEnBD(proyectoId, contenido, tipo) {
+        fetch(`/api/proyectos/${proyectoId}/mensajes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ contenido: contenido, tipo: tipo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Mensaje guardado en BD:', data);
+        })
+        .catch(error => {
+            console.error('Error al guardar mensaje en BD:', error);
+        });
+    }
+    
+
+    
     enviarBtn.addEventListener('click', enviarMensaje);
 
     mensajeInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && proyectoSeleccionadoId !== null) {
             enviarMensaje();
+        } else  if (proyectoSeleccionadoId == null){
+            alert('Selecciona un proyecto primero');
         }
     });
 });

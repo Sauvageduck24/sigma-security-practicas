@@ -3,12 +3,16 @@
 {% block content %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+    <script>
+        const usuario_id = {{ usuario_id | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/proyectos.js') }}"></script> <!-- PRIMERO CARGAR PROYECTOS JS!! -->
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/proyectos.js') }}"></script>
+    
 
     
     <!-- Contenedor principal -->
-    <div class="container-fluid mt-10 m-3 p-3 color_d9">
+    <div class="container-fluid mt-3 p-3 color_d9">
         <div class="row">
             <!-- Lista de proyectos -->
             <div class="col-12 col-md-3 mb-3">
@@ -31,7 +35,8 @@
             <!-- Sección de chat -->
             <div class="col-12 col-md-9 color_d9">
                 <div class="card">
-                    <div class="card-body chat-box m-0 p-0"></div>
+                    <!-- Aquí le agregamos el id="chatBox" -->
+                    <div class="card-body chat-box m-0 p-0" id="chat-box"></div>
                     <div class="card-footer">
                         <div class="input-group">
                             <input type="text" id="mensajeInput" class="form-control" placeholder="Escribe tu mensaje..." autofocus>
