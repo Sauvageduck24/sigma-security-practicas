@@ -11,11 +11,28 @@ from api.chat import chat_bp
 from app.database import init_db,Mensaje
 import flask_praetorian
 from types import SimpleNamespace
+import os
 
 # Crear guardián de seguridad
 guard = flask_praetorian.Praetorian()
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+base_dir = os.getcwd()
+
+print(os.getcwd())
+
+if base_dir.endswith('sigma-security-practicas'):
+    template_dir = '../templates'
+    static_dir = '../static'
+else:
+    template_dir = 'sigma-security-practicas/templates'
+    static_dir = 'sigma-security-practicas/static'
+
+print(template_dir)
+
+print(os.listdir('templates'))
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+
 app.secret_key = 'super_secret_key'  # Necesario para sesiones
 
 # 👉 Esta línea es esencial para Praetorian
