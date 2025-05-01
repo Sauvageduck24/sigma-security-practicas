@@ -20,25 +20,25 @@ base_dir = os.getcwd()
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../templates'))
 static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../static'))
 
-app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+application = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
-app.secret_key = 'super_secret_key'  # Necesario para sesiones
+application.secret_key = 'super_secret_key'  # Necesario para sesiones
 
 # 👉 Esta línea es esencial para Praetorian
-app.config['JWT_SECRET_KEY'] = 'súper_secreta_para_tokens'
+application.config['JWT_SECRET_KEY'] = 'súper_secreta_para_tokens'
 
-CORS(app)  # Permitir CORS si el frontend lo necesita
-app.register_blueprint(api_bp, url_prefix="/api")  # Montar API en /api
-app.register_blueprint(chat_bp, url_prefix="/chat")  # Montar chat en /chat
+CORS(application)  # Permitir CORS si el frontend lo necesita
+application.register_blueprint(api_bp, url_prefix="/api")  # Montar API en /api
+application.register_blueprint(chat_bp, url_prefix="/chat")  # Montar chat en /chat
 
-init_db(app)
+init_db(application)
 
 # 👉 Inicializar Flask-Praetorian correctamente
 #guard.init_app(app, User)  # Usa tu modelo de usuario
 
 # Configurar Flask-Login
 login_manager = LoginManager()
-login_manager.init_app(app)
+login_manager.init_app(application)
 login_manager.login_view = "login"
 
 class UserLogin(UserMixin):
@@ -47,7 +47,7 @@ class UserLogin(UserMixin):
         self.nombre = user.nombre
         self.is_admin = (user.nombre == "admin")
 
-@app.route("/api/login", methods=["POST"])
+@application.route("/api/login", methods=["POST"])
 def login_jwt():
     data = request.get_json()
     username = data.get("username")
@@ -68,7 +68,7 @@ def load_user(user_id):
             return UserLogin(user_obj)
     return None
 
-@app.route("/crear_admin", methods=["GET", "POST"])
+@application.route("/crear_admin", methods=["GET", "POST"])
 def crear_admin():
     usuarios_response = requests.get(url_for('api.usuarios', _external=True))
     if usuarios_response.status_code == 200:
@@ -93,11 +93,11 @@ def crear_admin():
 
     return render_template("crear_admin.html")
 
-@app.route("/")
+@application.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/login", methods=["GET", "POST"])
+@application.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("sesion_iniciada"))
@@ -123,19 +123,19 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/sesion_iniciada")
+@application.route("/sesion_iniciada")
 @login_required
 def sesion_iniciada():
     return render_template("sesion_iniciada.html")
 
-@app.route("/logout")
+@application.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("Has cerrado sesión", "success")
     return redirect(url_for("home"))
 
-@app.route("/admin")
+@application.route("/admin")
 @login_required
 def admin_dashboard():
     if not current_user.is_admin:
@@ -155,7 +155,7 @@ def admin_dashboard():
 
     return render_template("admin_dashboard.html", usuarios=usuarios, proyectos=proyectos)
 
-@app.route("/dashboard")
+@application.route("/dashboard")
 @login_required
 def dashboard():
     if current_user.nombre == "admin":
@@ -170,7 +170,7 @@ def dashboard():
 
     return render_template("dashboard.html", proyectos=proyectos, usuario_actual=current_user)
 
-@app.route("/perfil")
+@application.route("/perfil")
 @login_required
 def perfil_usuario():
     usuario_response = requests.get(url_for('api.usuarios', _external=True))
@@ -183,7 +183,7 @@ def perfil_usuario():
     
     return render_template("perfil.html", usuario=usuario)
 
-@app.route("/admin/crear_usuario", methods=["GET", "POST"])
+@application.route("/admin/crear_usuario", methods=["GET", "POST"])
 @login_required
 def crear_usuario():
     if not current_user.is_admin:
@@ -206,7 +206,7 @@ def crear_usuario():
 
     return render_template("crear_usuario.html")
 
-@app.route("/admin/crear_proyecto", methods=["GET", "POST"])
+@application.route("/admin/crear_proyecto", methods=["GET", "POST"])
 @login_required
 def crear_proyecto():
     if request.method == "POST":
@@ -223,7 +223,7 @@ def crear_proyecto():
 
     return render_template("crear_proyecto.html")
 
-@app.route("/api/proyectos", methods=["POST"]) #CREAR PROYECTO
+@application.route("/api/proyectos", methods=["POST"]) #CREAR PROYECTO
 @login_required
 def crear_proyecto_api():
     data = request.get_json()
@@ -250,7 +250,7 @@ def crear_proyecto_api():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-@app.route("/api/proyectos", methods=["GET"])
+@application.route("/api/proyectos", methods=["GET"])
 @login_required
 def listar_proyectos_api():
     try:
@@ -273,7 +273,7 @@ def listar_proyectos_api():
         print("Error en listar_proyectos_api:", e)  # 👈 Captura el error en la consola Flask
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/proyectos/<int:proyecto_id>", methods=["DELETE"])
+@application.route("/api/proyectos/<int:proyecto_id>", methods=["DELETE"])
 @login_required
 def eliminar_proyecto_api(proyecto_id):
     try:
@@ -291,7 +291,7 @@ def eliminar_proyecto_api(proyecto_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["POST"])
+@application.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["POST"])
 @login_required
 def crear_mensajes(proyecto_id):
     data = request.get_json()
@@ -324,7 +324,7 @@ def crear_mensajes(proyecto_id):
         print("Error creando mensaje:", e)
         return jsonify({"error": str(e)}), 500
         
-@app.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["GET"])
+@application.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["GET"])
 @login_required
 def obtener_mensajes(proyecto_id):
     try:
@@ -343,11 +343,11 @@ def obtener_mensajes(proyecto_id):
         print("Error en obtener_mensajes:", e)
         return jsonify({"error": str(e)}), 500
 
-@app.route("/signin")
+@application.route("/signin")
 def signin():
     return render_template("signin.html")
 
-@app.route("/chat-bot")
+@application.route("/chat-bot")
 @login_required
 def chat_bot():
     proyectos_response = requests.get(url_for('api.proyectos', _external=True))
@@ -358,15 +358,15 @@ def chat_bot():
         flash("Error al obtener proyectos desde la API", "danger")
         return redirect(url_for("dashboard"))
 
-@app.route("/select-project")
+@application.route("/select-project")
 def select_project():
     return render_template("select_project.html")
 
-@app.route("/suma/<int:num1>/<int:num2>")
+@application.route("/suma/<int:num1>/<int:num2>")
 def suma(num1, num2):
     return render_template("suma.html", num1=num1, num2=num2, suma=num1 + num2)
 
-@app.route("/test-db")
+@application.route("/test-db")
 def test_db():
     try:
         result = db.session.execute(text("SELECT 1")).fetchone()
@@ -375,4 +375,4 @@ def test_db():
         return f"Error conectando a la base de datos: {e}"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    application.run(debug=True)

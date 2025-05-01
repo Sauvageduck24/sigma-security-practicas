@@ -7,6 +7,6 @@ if path not in sys.path:
     sys.path.append(path)
 
 # Importa la app de Flask
-from app import app as application
+from app import application
 
 application.run(port=5000, debug=True)
