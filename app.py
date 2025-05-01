@@ -1,3 +1,12 @@
-from app.__init__ import app
+import sys
+import os
 
-app.run(debug=True, port=5000)
+# Agrega el path de tu proyecto
+path = '/home/sauvageduck24/sigma-security-practicas'
+if path not in sys.path:
+    sys.path.append(path)
+
+# Importa la app de Flask
+from app import app as application
+
+application.run(port=5000, debug=True)

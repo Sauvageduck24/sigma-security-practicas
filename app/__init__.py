@@ -62,14 +62,6 @@ def load_user(user_id):
             return UserLogin(user_obj)
     return None
 
-@app.before_request
-def check_for_admin_or_empty_db():
-    session = db.session
-    if request.endpoint != "crear_admin" and request.endpoint != "static":
-        if session.query(User).count() == 0 or not session.query(User).filter_by(nombre="admin").first():
-            flash("No hay usuarios en la base de datos. Por favor, crea un usuario administrador.", "warning")
-            return redirect(url_for("crear_admin"))
-
 @app.route("/crear_admin", methods=["GET", "POST"])
 def crear_admin():
     usuarios_response = requests.get(url_for('api.usuarios', _external=True))
