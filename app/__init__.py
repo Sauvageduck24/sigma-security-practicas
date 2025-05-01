@@ -5,7 +5,7 @@ from app.database import db, User, Proyecto  # Importando el ORM de SQLAlchemy
 import requests  # Importar requests para consumir la API
 from sqlalchemy import text
 from flask_cors import CORS
-from api.app import api_bp
+from api.app import api_bp,obtener_usuarios,crear_usuario,eliminar_usuario
 from api.chat import chat_bp
 # Inicialización de la base de datos
 from app.database import init_db,Mensaje
@@ -70,25 +70,23 @@ def load_user(user_id):
 
 @application.route("/crear_admin", methods=["GET", "POST"])
 def crear_admin():
-    usuarios_response = requests.get(url_for('api.usuarios', _external=True))
-    if usuarios_response.status_code == 200:
-        usuarios = usuarios_response.json()
-        if any(u['nombre'] == "admin" for u in usuarios):
-            flash("Ya existe un usuario administrador.", "info")
-            return redirect(url_for("login"))
+    usuarios = obtener_usuarios()
+    if any(u['nombre'] == "admin" for u in usuarios):
+        flash("Ya existe un usuario administrador.", "info")
+        return redirect(url_for("login"))
 
     if request.method == "POST":
         nombre = request.form["nombre"]
         contrasenya = request.form["contrasenya"]
 
         contrasenya_hash = generate_password_hash(contrasenya)
-        admin_user = User(nombre=nombre, contrasenya=contrasenya_hash)
 
-        response = requests.post(url_for('api.usuarios', _external=True), json={"nombre": nombre, "contrasenya": contrasenya_hash})
-        if response.status_code != 201:
-            flash("Error al crear el usuario administrador", "danger")
+        try:
+            crear_usuario(nombre, contrasenya_hash)
+            flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
+        except Exception as e:
+            flash("Error al crear el usuario administrador: " + str(e), "danger")
 
-        flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
         return redirect(url_for("login"))
 
     return render_template("crear_admin.html")

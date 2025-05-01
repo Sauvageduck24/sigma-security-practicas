@@ -10,16 +10,34 @@ from api.engine import engine
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
+def obtener_usuarios():
+    conn = get_db_connection()
+    usuarios = conn.execute(text('SELECT id, nombre, fecha_registro, contrasenya FROM user_account')).fetchall()
+    return [{'id': u[0], 'nombre': u[1], 'fecha_registro': u[2], 'contrasenya': u[3]} for u in usuarios]
+
+def crear_usuario(nombre, contrasenya):
+    user = User(nombre=nombre, contrasenya=contrasenya)
+    conn = get_db_connection()
+    conn.add(user)
+    conn.commit()
+    return user
+
+def eliminar_usuario(user_id):
+    conn = get_db_connection()
+    user = User.query.get(user_id)
+    if not user:
+        return None
+    user = conn.merge(user)
+    conn.delete(user)
+    conn.commit()
+    return True
+
 def get_db_connection():
     return db.session
 
 class Usuarios(Resource):
     def get(self):
-        print(db.session)
-        conn= get_db_connection()
-        usuarios = conn.execute(text('SELECT id, nombre, fecha_registro, contrasenya FROM user_account')).fetchall()
-        usuarios_dict = [{'id': u[0], 'nombre': u[1], 'fecha_registro': u[2], 'contrasenya': u[3]} for u in usuarios]
-        return jsonify(usuarios_dict)
+        return jsonify(obtener_usuarios())
 
     def post(self):
         data = request.get_json()
@@ -29,11 +47,7 @@ class Usuarios(Resource):
         if not nombre or not contrasenya:
             abort(400, description="Nombre y contraseña requeridos")
 
-        user= User(nombre=nombre, contrasenya=contrasenya)
-
-        conn= get_db_connection()
-        conn.add(user)
-        conn.commit()
+        crear_usuario(nombre, contrasenya)
         return {'message': 'Usuario creado'}, 201
 
     def delete(self):
@@ -42,14 +56,10 @@ class Usuarios(Resource):
         if not user_id:
             abort(400, description="ID requerido")
 
-        conn= get_db_connection()
-        user= User.query.get(user_id)
-        if not user:
+        resultado = eliminar_usuario(user_id)
+        if not resultado:
             abort(404, description="Usuario no encontrado")
 
-        user = conn.merge(user)
-        conn.delete(user)
-        conn.commit()
         return {'message': 'Usuario eliminado'}, 200
 
 # Proyectos se queda igual por ahora
