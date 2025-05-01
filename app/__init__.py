@@ -111,13 +111,15 @@ def login():
             usuarios = user_response.json()
             user = next((u for u in usuarios if u['nombre'] == nombre), None)
 
-        if user and check_password_hash(user['contrasenya'], contrasenya):
-            user_obj=SimpleNamespace(**user)
-            login_user(UserLogin(user_obj))
-            flash("Has iniciado sesión correctamente", "success")
-            return redirect(url_for("home"))
+            if user and check_password_hash(user['contrasenya'], contrasenya):
+                user_obj=SimpleNamespace(**user)
+                login_user(UserLogin(user_obj))
+                flash("Has iniciado sesión correctamente", "success")
+                return redirect(url_for("home"))
+            else:
+                flash("Credenciales incorrectas", "danger")
         else:
-            flash("Credenciales incorrectas", "danger")
+            print("Error al obtener usuarios:", user_response.status_code)
 
     return render_template("login.html")
 
