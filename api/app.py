@@ -5,13 +5,10 @@ from flask_restful import Api, Resource
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, text
 from app.database import Proyecto, User, Mensaje
+from api.engine import engine
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
-
-uri = 'mysql+pymysql://root:1234@localhost/sigma_security'
-#uri = 'mysql+pymysql://sauvageduck24:sigmasecurity@sauvageduck24.mysql.pythonanywhere-services.com/sauvageduck24$sigmasecurity'
-engine = create_engine(uri)
 
 def get_db_connection():
     return Session(engine)

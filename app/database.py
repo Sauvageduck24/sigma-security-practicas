@@ -9,6 +9,7 @@ from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, ForeignKey, DateTime
 from datetime import datetime
+from api.engine import engine,uri
 
 load_dotenv()
 
@@ -16,11 +17,6 @@ load_dotenv()
 db = SQLAlchemy()
 
 entorno = os.getenv('ENTORNO', 'local')
-
-#uri = 'mysql+pymysql://sauvageduck24:sigmasecurity@sauvageduck24.mysql.pythonanywhere-services.com/sauvageduck24$sigmasecurity'
-uri = 'mysql+pymysql://root:1234@localhost/sigma_security'
-
-engine = create_engine(uri)
 
 class User(db.Model):
     __tablename__ = "user_account"
