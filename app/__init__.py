@@ -17,19 +17,8 @@ import os
 guard = flask_praetorian.Praetorian()
 
 base_dir = os.getcwd()
-
-print(os.getcwd())
-
-if base_dir.endswith('sigma-security-practicas'):
-    template_dir = '../templates'
-    static_dir = '../static'
-else:
-    template_dir = 'sigma-security-practicas/templates'
-    static_dir = 'sigma-security-practicas/static'
-
-print(template_dir)
-
-print(os.listdir('templates'))
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../templates'))
+static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../static'))
 
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
@@ -45,7 +34,7 @@ app.register_blueprint(chat_bp, url_prefix="/chat")  # Montar chat en /chat
 init_db(app)
 
 # 👉 Inicializar Flask-Praetorian correctamente
-guard.init_app(app, User)
+#guard.init_app(app, User)  # Usa tu modelo de usuario
 
 # Configurar Flask-Login
 login_manager = LoginManager()

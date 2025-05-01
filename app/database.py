@@ -10,6 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, ForeignKey, DateTime
 from datetime import datetime
 from api.engine import engine,uri
+from flask_login import UserMixin
 
 load_dotenv()
 
@@ -18,36 +19,32 @@ db = SQLAlchemy()
 
 entorno = os.getenv('ENTORNO', 'local')
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "user_account"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    nombre: Mapped[str] = mapped_column(String(50), nullable=False)  # Este será tu "username"
-    contrasenya: Mapped[str] = mapped_column(String(200), nullable=False)
-    fecha_registro: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    id = db.Column(Integer, primary_key=True)
+    nombre = db.Column(String(50), nullable=False)  # Este será tu "username"
+    contrasenya = db.Column(String(200), nullable=False)
+    fecha_registro = db.Column(DateTime, default=datetime.utcnow)
 
-    proyectos: Mapped[List["Proyecto"]] = relationship(back_populates="creador", cascade="all, delete-orphan")
+    proyectos = relationship("Proyecto", back_populates="creador", cascade="all, delete-orphan")
 
-    # Requerido por Flask-Praetorian:
+    # Método requerido por Flask-Login:
+    def get_id(self):
+        return str(self.id)  # Flask-Login requiere que se devuelva un string como ID
+
     @classmethod
     def lookup(cls, username):
         return cls.query.filter_by(nombre=username).first()
 
-    def identity(self):
-        return self.id
-
-    @classmethod
-    def identify(cls, id):
-        return cls.query.get(id)
-
-    # Esto le dice a Praetorian qué campo contiene la contraseña
-    @property
-    def rolenames(self):
-        return []  # O una lista con roles si los usas
-
     @property
     def password(self):
         return self.contrasenya
+
+    # Si planeas usar roles, puedes añadirlos como una propiedad adicional:
+    @property
+    def rolenames(self):
+        return []  # O una lista con roles si los usas
 
 class Proyecto(db.Model):
     __tablename__ = "proyecto"
