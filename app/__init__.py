@@ -1,16 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.database import db, User, Proyecto  # Importando el ORM de SQLAlchemy
-import requests  # Importar requests para consumir la API
-from sqlalchemy import text
+from app.database import db, User, Proyecto, Mensaje, init_db
 from flask_cors import CORS
-from api.app import api_bp,obtener_usuarios,crear_usuario,eliminar_usuario
+from api.app import api_bp, obtener_usuarios, crear_usuario, eliminar_usuario, obtener_proyectos, crear_proyecto, eliminar_proyecto, obtener_mensajes, crear_mensaje
 from api.chat import chat_bp
-# Inicialización de la base de datos
-from app.database import init_db,Mensaje
 import flask_praetorian
-from types import SimpleNamespace
 import os
 
 # Crear guardián de seguridad
@@ -22,30 +16,16 @@ static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../static'
 
 application = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
-application.secret_key = 'super_secret_key'  # Necesario para sesiones
-
-# 👉 Esta línea es esencial para Praetorian
+application.secret_key = 'super_secret_key'
 application.config['JWT_SECRET_KEY'] = 'súper_secreta_para_tokens'
 
-CORS(application)  # Permitir CORS si el frontend lo necesita
-application.register_blueprint(api_bp, url_prefix="/api")  # Montar API en /api
-application.register_blueprint(chat_bp, url_prefix="/chat")  # Montar chat en /chat
+CORS(application)
+
+application.register_blueprint(api_bp, url_prefix="/api")
+application.register_blueprint(chat_bp, url_prefix="/chat")
 
 init_db(application)
-
-# 👉 Inicializar Flask-Praetorian correctamente
-#guard.init_app(app, User)  # Usa tu modelo de usuario
-
-# Configurar Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(application)
-login_manager.login_view = "login"
-
-class UserLogin(UserMixin):
-    def __init__(self, user):
-        self.id = user.id
-        self.nombre = user.nombre
-        self.is_admin = (user.nombre == "admin")
+guard.init_app(application, User)
 
 @application.route("/api/login", methods=["POST"])
 def login_jwt():
@@ -57,37 +37,22 @@ def login_jwt():
     token = guard.encode_jwt_token(user)
     return jsonify({"access_token": token})
 
-@login_manager.user_loader
-def load_user(user_id):
-    usuarios_response = requests.get(url_for('api.usuarios', _external=True))
-    if usuarios_response.status_code == 200:
-        usuarios = usuarios_response.json()
-        user = next((u for u in usuarios if u['id'] == int(user_id)), None)
-        if user:
-            user_obj=SimpleNamespace(**user)
-            return UserLogin(user_obj)
-    return None
-
 @application.route("/crear_admin", methods=["GET", "POST"])
 def crear_admin():
     usuarios = obtener_usuarios()
     if any(u['nombre'] == "admin" for u in usuarios):
         flash("Ya existe un usuario administrador.", "info")
-        return redirect(url_for("login"))
+        return redirect(url_for("home"))
 
     if request.method == "POST":
         nombre = request.form["nombre"]
         contrasenya = request.form["contrasenya"]
 
-        contrasenya_hash = generate_password_hash(contrasenya)
+        contrasenya_hash = guard.hash_password(contrasenya)
+        crear_usuario(nombre, contrasenya_hash)
 
-        try:
-            crear_usuario(nombre, contrasenya_hash)
-            flash("Usuario administrador creado exitosamente. Ahora puedes iniciar sesión.", "success")
-        except Exception as e:
-            flash("Error al crear el usuario administrador: " + str(e), "danger")
-
-        return redirect(url_for("login"))
+        flash("Usuario administrador creado exitosamente", "success")
+        return redirect(url_for("home"))
 
     return render_template("crear_admin.html")
 
@@ -95,136 +60,112 @@ def crear_admin():
 def home():
     return render_template("index.html")
 
-@application.route("/login", methods=["GET", "POST"])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("sesion_iniciada"))
-
-    if request.method == "POST":
-        nombre = request.form["nombre"]
-        contrasenya = request.form["contrasenya"]
-
-        user_response = requests.get(url_for('api.usuarios', _external=True))
-        if user_response.status_code == 200:
-            usuarios = user_response.json()
-            user = next((u for u in usuarios if u['nombre'] == nombre), None)
-
-            if user and check_password_hash(user['contrasenya'], contrasenya):
-                user_obj=SimpleNamespace(**user)
-                login_user(UserLogin(user_obj))
-                flash("Has iniciado sesión correctamente", "success")
-                return redirect(url_for("home"))
-            else:
-                flash("Credenciales incorrectas", "danger")
-        else:
-            print("Error al obtener usuarios:", user_response.status_code)
-
-    return render_template("login.html")
-
 @application.route("/sesion_iniciada")
-@login_required
 def sesion_iniciada():
-    return render_template("sesion_iniciada.html")
-
-@application.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    flash("Has cerrado sesión", "success")
-    return redirect(url_for("home"))
-
-@application.route("/admin")
-@login_required
-def admin_dashboard():
-    if not current_user.is_admin:
-        flash("Acceso denegado: Solo el administrador puede ver esta página.", "danger")
-        return redirect(url_for("home"))
-
-    usuarios_response = requests.get(url_for('api.usuarios', _external=True))
-    proyectos_response = requests.get(url_for('api.proyectos', _external=True))
-
-    if usuarios_response.status_code == 200 and proyectos_response.status_code == 200:
-        usuarios = usuarios_response.json()
-        proyectos = proyectos_response.json()
-    else:
-        flash("Error al obtener datos desde la API", "danger")
-        usuarios = []
-        proyectos = []
-
-    return render_template("admin_dashboard.html", usuarios=usuarios, proyectos=proyectos)
+    token=request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    
+    user=guard.extract_jwt_token(token)
+    return render_template("sesion_iniciada.html", usuario=user)
 
 @application.route("/dashboard")
-@login_required
 def dashboard():
-    if current_user.nombre == "admin":
+    token=request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    
+    user=guard.extract_jwt_token(token)
+    if user['rls'] == "admin":
         return redirect(url_for("admin_dashboard"))
 
-    proyectos_response = requests.get(url_for('api.proyectos', _external=True))
-    if proyectos_response.status_code == 200:
-        proyectos = [p for p in proyectos_response.json() if p["creador_id"] == current_user.id]
-    else:
-        flash("Error al obtener proyectos desde la API", "danger")
-        proyectos = []
+    proyectos = [p for p in obtener_proyectos() if p["creador_id"] == user['id']]
+    user=next((u for u in obtener_usuarios() if u['id'] == user['id']), None)
+    return render_template("dashboard.html", proyectos=proyectos, usuario_actual=user)
 
-    return render_template("dashboard.html", proyectos=proyectos, usuario_actual=current_user)
+@application.route("/admin")
+def admin_dashboard():
+    token = request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión como administrador para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    
+    user = guard.extract_jwt_token(token)
+    if user['rls'] != "admin":
+        flash("Acceso denegado", "danger")
+        return redirect(url_for("home"))
+
+    usuarios = obtener_usuarios()
+    proyectos = obtener_proyectos()
+    return render_template("admin_dashboard.html", usuarios=usuarios, proyectos=proyectos)
+
+@application.route("/logout")
+def logout():
+    flash("Sesión cerrada correctamente.", "info")
+    response = redirect(url_for("home"))
+    response.delete_cookie("access_token")
+    return response
 
 @application.route("/perfil")
-@login_required
 def perfil_usuario():
-    usuario_response = requests.get(url_for('api.usuarios', _external=True))
-    if usuario_response.status_code == 200:
-        usuarios = usuario_response.json()
-        usuario = next((u for u in usuarios if u['id'] == current_user.id), None)
-    else:
-        flash("Error al obtener datos del usuario desde la API", "danger")
-        return redirect(url_for("home"))
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
     
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
+    usuario = next((u for u in obtener_usuarios() if u['id'] == user_data['id']), None)
     return render_template("perfil.html", usuario=usuario)
 
 @application.route("/admin/crear_usuario", methods=["GET", "POST"])
-@login_required
-def crear_usuario():
-    if not current_user.is_admin:
-        flash("Acceso denegado: Solo el administrador puede crear usuarios.", "danger")
-        return redirect(url_for('home'))
+def crear_usuario_app():
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        flash("Debes iniciar sesión como administrador para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
+    if user_data['rls'] != "admin":
+        flash("Solo el administrador puede crear usuarios", "danger")
+        return redirect(url_for("home"))
 
     if request.method == "POST":
         nombre = request.form["nombre"]
         contrasenya = request.form["contrasenya"]
-
-        contrasenya_hash = generate_password_hash(contrasenya)
-        new_user = User(nombre=nombre, contrasenya=contrasenya_hash)
-
-        usuario_response = requests.post(url_for('api.usuarios', _external=True), json={"nombre": nombre, "contrasenya": contrasenya_hash})
-        if usuario_response.status_code != 201:
-            flash("Error al crear el usuario", "danger")
-
+        contrasenya_hash = guard.hash_password(contrasenya)
+        crear_usuario(nombre, contrasenya_hash)
         flash("Usuario creado exitosamente", "success")
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for("admin_dashboard"))
 
     return render_template("crear_usuario.html")
 
 @application.route("/admin/crear_proyecto", methods=["GET", "POST"])
-@login_required
-def crear_proyecto():
+def crear_proyecto_app():
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        flash("Debes iniciar sesión como administrador para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
     if request.method == "POST":
         nombre = request.form["nombre"]
         descripcion = request.form["descripcion"]
-
-        #new_proyecto = Proyecto(nombre=nombre, descripcion=descripcion, creador_id=current_user.id)
-
-        nuevo_proyecto= {'nombre':nombre, 'descripcion':descripcion, 'creador_id':current_user.id}
-        response = requests.post(url_for('api.proyectos', _external=True), json=nuevo_proyecto)
-
+        crear_proyecto(nombre, descripcion, user_data['id'])
         flash("Proyecto creado exitosamente", "success")
-        return redirect(url_for('dashboard'))
+        return redirect(url_for("dashboard"))
 
     return render_template("crear_proyecto.html")
 
-@application.route("/api/proyectos", methods=["POST"]) #CREAR PROYECTO
-@login_required
+@application.route("/api/proyectos", methods=["POST"])
 def crear_proyecto_api():
     data = request.get_json()
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        return jsonify({"error": "Token no proporcionado"}), 401
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
 
     nombre = data.get('nombre')
     descripcion = data.get('descripcion', '')
@@ -232,129 +173,121 @@ def crear_proyecto_api():
     if not nombre:
         return jsonify({"error": "El nombre es obligatorio"}), 400
 
-    new_proyecto = Proyecto(nombre=nombre, descripcion=descripcion, creador_id=current_user.id)
-
     try:
-        response = requests.post(url_for('api.proyectos', _external=True), json=data)
-        print("Proyecto creado con ID:", new_proyecto.id)
-
-        return jsonify({
-            "id": new_proyecto.id,
-            "nombre": new_proyecto.nombre,
-            "descripcion": new_proyecto.descripcion,
-            "fecha_creacion": new_proyecto.fecha_creacion.isoformat()
-        }), 201
+        response = crear_proyecto(nombre, descripcion, user_data['id'])
+        return jsonify(response), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-    
+
 @application.route("/api/proyectos", methods=["GET"])
-@login_required
 def listar_proyectos_api():
     try:
-        print("Current user:", current_user.id)  # 👈 Añade esto para ver qué pasa
-        #proyectos = Proyecto.query.filter_by(creador_id=current_user.id).all()
-        proyectos_response = requests.get(url_for('api.proyectos', _external=True))
-        if proyectos_response.status_code == 200:
-            proyectos = [p for p in proyectos_response.json() if p["creador_id"] == current_user.id]
-            proyectos_data = [
-                {
-                    "id": proyecto.id,
-                    "nombre": proyecto.nombre,
-                    "descripcion": proyecto.descripcion,
-                    "fecha_creacion": proyecto.fecha_creacion.isoformat()
-                }
-                for proyecto in proyectos
-            ]
-            return jsonify(proyectos_data)
+        token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+        if not token:
+            return jsonify({"error": "Token no proporcionado"}), 401
+        
+        user_data = guard.extract_jwt_token(token)  # Decodifica el token
+        proyectos = [p for p in obtener_proyectos() if p["creador_id"] == user_data['id']]
+        return jsonify(proyectos)
     except Exception as e:
-        print("Error en listar_proyectos_api:", e)  # 👈 Captura el error en la consola Flask
         return jsonify({"error": str(e)}), 500
 
 @application.route("/api/proyectos/<int:proyecto_id>", methods=["DELETE"])
-@login_required
 def eliminar_proyecto_api(proyecto_id):
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        return jsonify({"error": "Token no proporcionado"}), 401
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
     try:
-        proyecto = Proyecto.query.filter_by(id=proyecto_id, creador_id=current_user.id).first()
+        proyecto = Proyecto.query.filter_by(id=proyecto_id, creador_id=user_data['id']).first()
         if not proyecto:
             return jsonify({"error": "Proyecto no encontrado o no autorizado"}), 404
-        
-        response = requests.delete(url_for('api.proyectos', _external=True) + f'?id={proyecto_id}')
-        if response.status_code != 200:
-            return jsonify({"error": "Error al eliminar el proyecto"}), 500
-
+        eliminar_proyecto(proyecto_id)
         return jsonify({"mensaje": "Proyecto eliminado correctamente"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-
 @application.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["POST"])
-@login_required
-def crear_mensajes(proyecto_id):
+def crear_mensajes_app(proyecto_id):
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        return jsonify({"error": "Token no proporcionado"}), 401
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
     data = request.get_json()
-
     contenido = data.get('contenido', '')
 
     if not contenido:
         return jsonify({"error": "El contenido es obligatorio"}), 400
 
-    new_mensaje = Mensaje(
-        contenido=contenido,
-        proyecto_id=proyecto_id,
-        usuario_id=current_user.id  # Opcional: si quieres registrar quién envió el mensaje
-    )
-
     try:
-        response = requests.post(url_for('api.mensajes', _external=True), json={'mensaje': contenido, 'proyecto_id': proyecto_id, 'usuario_id': current_user.id,'proyecto_id': proyecto_id})
-        if response.status_code != 201:
-            print("Error al crear el mensaje:", response.json())
-            return jsonify({"error": "Error al crear el mensaje"}), 500
-
-        print("Mensaje creado con ID:", new_mensaje.id)
-
-        return jsonify({
-            "id": new_mensaje.id,
-            "contenido": new_mensaje.contenido
-        }), 201
+        crear_mensaje(contenido, user_data['id'], proyecto_id)
+        return jsonify({"mensaje": "Mensaje creado correctamente"}), 201
     except Exception as e:
         db.session.rollback()
-        print("Error creando mensaje:", e)
         return jsonify({"error": str(e)}), 500
-        
+
 @application.route("/api/proyectos/<int:proyecto_id>/mensajes", methods=["GET"])
-@login_required
-def obtener_mensajes(proyecto_id):
+def obtener_mensajes_api(proyecto_id):
+    token = request.cookies.get("access_token")
+    if not token:
+        return jsonify({"error": "Token no proporcionado"}), 401
+    
     try:
         mensajes = Mensaje.query.filter_by(proyecto_id=proyecto_id).order_by(Mensaje.id.asc()).all()
-
         mensajes_data = [
-            {
-                "id": mensaje.id,
-                "contenido": mensaje.contenido
-            }
-            for mensaje in mensajes
+            {"id": m.id, "contenido": m.contenido} for m in mensajes
         ]
-
         return jsonify(mensajes_data)
     except Exception as e:
-        print("Error en obtener_mensajes:", e)
         return jsonify({"error": str(e)}), 500
 
 @application.route("/signin")
 def signin():
     return render_template("signin.html")
 
+@application.route("/login", methods=["GET", "POST"])
+def login():
+    token = request.cookies.get("access_token")
+    
+    if token:
+        return redirect(url_for("sesion_iniciada"))
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        contrasenya = request.form["contrasenya"]
+
+        usuarios = obtener_usuarios()
+        user = next((u for u in usuarios if u['nombre'] == nombre), None)
+
+        if user:
+            user = User(nombre=user["nombre"], contrasenya=user["contrasenya"],id=user["id"])
+            try:
+                if guard.authenticate(user.nombre, contrasenya):
+                    token = guard.encode_jwt_token(user)
+                    flash("Inicio de sesión exitoso", "success")
+                    response = redirect(url_for("home"))
+                    response.set_cookie("access_token", token, httponly=True, samesite="Lax")
+                    return response
+            except Exception:
+                flash("Credenciales incorrectas", "danger")
+
+    return render_template("login.html")
+
+
 @application.route("/chat-bot")
-@login_required
 def chat_bot():
-    proyectos_response = requests.get(url_for('api.proyectos', _external=True))
-    if proyectos_response.status_code == 200:
-        proyectos = [p for p in proyectos_response.json() if p["creador_id"] == current_user.id]
-        return render_template("chatbot.html", proyectos=proyectos,usuario_id=current_user.id)
-    else:
-        flash("Error al obtener proyectos desde la API", "danger")
-        return redirect(url_for("dashboard"))
+    token = request.cookies.get("access_token")  # Asegúrate de obtener el token de la cookie
+    if not token:
+        flash("Debes iniciar sesión para acceder al chatbot", "danger")
+        return redirect(url_for("home"))
+    
+    user_data = guard.extract_jwt_token(token)  # Decodifica el token
+    proyectos = [p for p in obtener_proyectos() if p["creador_id"] == user_data['id']]
+    return render_template("chatbot.html", proyectos=proyectos, usuario_id=user_data['id'])
 
 @application.route("/select-project")
 def select_project():
@@ -367,7 +300,7 @@ def suma(num1, num2):
 @application.route("/test-db")
 def test_db():
     try:
-        result = db.session.execute(text("SELECT 1")).fetchone()
+        result = db.session.execute("SELECT 1").fetchone()
         return f"Conexión exitosa: {result}"
     except Exception as e:
         return f"Error conectando a la base de datos: {e}"

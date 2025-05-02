@@ -32,7 +32,7 @@ function guardarNuevoProyecto() { //PARA AGREGAR EL WPROYECTO
             'Content-Type': 'application/json'
         },
         //body: JSON.stringify({ nombre, descripcion, })
-        body: JSON.stringify({ 'nombre':nombre,"descripcion":descripcion , "creador_id":1 }) // Cambiado a un solo objeto
+        body: JSON.stringify({ 'nombre':nombre,"descripcion":descripcion , "creador_id":usuario_id }) // Cambiado a un solo objeto
     })
     .then(async response => {
         if (!response.ok) {

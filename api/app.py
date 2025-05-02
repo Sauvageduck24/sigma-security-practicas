@@ -32,6 +32,40 @@ def eliminar_usuario(user_id):
     conn.commit()
     return True
 
+def obtener_proyectos():
+    conn = get_db_connection()
+    proyectos = conn.execute(text('SELECT id, nombre, descripcion, creador_id FROM proyecto')).fetchall()
+    return [{'id': p[0], 'nombre': p[1], 'descripcion': p[2], 'creador_id': p[3]} for p in proyectos]
+
+def crear_proyecto(nombre, descripcion, creador_id):
+    proyecto = Proyecto(nombre=nombre, descripcion=descripcion, creador_id=creador_id)
+    conn = get_db_connection()
+    conn.add(proyecto)
+    conn.commit()
+    return proyecto
+
+def eliminar_proyecto(proyecto_id):
+    conn = get_db_connection()
+    proyecto = Proyecto.query.get(proyecto_id)
+    if not proyecto:
+        return None
+    proyecto = conn.merge(proyecto)
+    conn.delete(proyecto)
+    conn.commit()
+    return True
+
+def obtener_mensajes():
+    conn = get_db_connection()
+    mensajes = conn.execute(text('SELECT id, mensaje, fecha_envio, usuario_id FROM mensajes')).fetchall()
+    return [{'id': m[0], 'mensaje': m[1], 'fecha_envio': m[2], 'usuario_id': m[3]} for m in mensajes]
+
+def crear_mensaje(mensaje, usuario_id, proyecto_id):
+    mensaje = Mensaje(contenido=mensaje, usuario_id=usuario_id, proyecto_id=proyecto_id)
+    conn = get_db_connection()
+    conn.add(mensaje)
+    conn.commit()
+    return mensaje
+
 def get_db_connection():
     return db.session
 
@@ -65,10 +99,7 @@ class Usuarios(Resource):
 # Proyectos se queda igual por ahora
 class Proyectos(Resource):
     def get(self):
-        conn= get_db_connection()
-        proyectos = conn.execute(text('SELECT id, nombre, descripcion, creador_id FROM proyecto')).fetchall()
-        proyectos_dict = [{'id': p[0], 'nombre': p[1], 'descripcion': p[2], 'creador_id': p[3]} for p in proyectos]
-        return jsonify(proyectos_dict)
+        return jsonify(obtener_proyectos())
     
     def post(self):
         data = request.get_json()
@@ -79,11 +110,7 @@ class Proyectos(Resource):
         if not nombre or not creador_id:
             abort(400, description="Nombre y creador_id requeridos")
 
-        proyecto=Proyecto(nombre=nombre, descripcion=descripcion, creador_id=creador_id)
-
-        conn= get_db_connection()
-        conn.add(proyecto)
-        conn.commit()
+        crear_proyecto(nombre, descripcion, creador_id)
         return {'message': 'Proyecto creado'}, 201
     
     def delete(self):
@@ -91,27 +118,22 @@ class Proyectos(Resource):
         if not proyecto_id:
             abort(400, description="ID requerido")
 
-        conn=get_db_connection
         proyecto = Proyecto.query.get(proyecto_id)
         if not proyecto:
             abort(404, description="Proyecto no encontrado")
 
-        proyecto = conn.merge(proyecto)
-        conn.delete(proyecto)
-        conn.commit()
+        resultado = eliminar_proyecto(proyecto_id)
+        if not resultado:
+            abort(404, description="Proyecto no encontrado")
 
         return {'message': 'Proyecto eliminado'}, 200
 
 class Mensajes(Resource):
     def get(self):
-        conn=get_db_connection
-        mensajes = conn.execute(text('SELECT id, mensaje, fecha_envio, usuario_id FROM mensajes')).fetchall()
-        mensajes_dict = [{'id': m[0], 'mensaje': m[1], 'fecha_envio': m[2], 'usuario_id': m[3]} for m in mensajes]
-        return jsonify(mensajes_dict)
+        return jsonify(obtener_mensajes())
 
     def post(self):
         data = request.get_json()
-        print(data)
         mensaje = data.get('mensaje')
         usuario_id = data.get('usuario_id')
         proyecto_id = data.get('proyecto_id')
@@ -119,11 +141,7 @@ class Mensajes(Resource):
         if not mensaje or not usuario_id or not proyecto_id:
             abort(400, description="Mensaje y usuario_id requeridos")
 
-        mensaje=Mensaje(contenido=mensaje, usuario_id=usuario_id,proyecto_id=proyecto_id)
-
-        conn=get_db_connection()
-        conn.add(mensaje)
-        conn.commit()
+        crear_mensaje(mensaje, usuario_id, proyecto_id)
         return {'message': 'Mensaje creado'}, 201
 
 api.add_resource(Usuarios, '/usuarios')

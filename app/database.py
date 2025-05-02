@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from sqlalchemy import inspect
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, ForeignKey, DateTime
+from sqlalchemy import Integer, String, ForeignKey, DateTime,Column
 from datetime import datetime
 from api.engine import engine,uri
 from flask_login import UserMixin
@@ -19,32 +19,35 @@ db = SQLAlchemy()
 
 entorno = os.getenv('ENTORNO', 'local')
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     __tablename__ = "user_account"
 
-    id = db.Column(Integer, primary_key=True)
-    nombre = db.Column(String(50), nullable=False)  # Este será tu "username"
-    contrasenya = db.Column(String(200), nullable=False)
-    fecha_registro = db.Column(DateTime, default=datetime.utcnow)
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(50), nullable=False, unique=True)  # Este es el username
+    contrasenya = Column(String(200), nullable=False)
+    fecha_registro = Column(DateTime, default=datetime.utcnow)
 
     proyectos = relationship("Proyecto", back_populates="creador", cascade="all, delete-orphan")
 
-    # Método requerido por Flask-Login:
-    def get_id(self):
-        return str(self.id)  # Flask-Login requiere que se devuelva un string como ID
-
+    # 🔐 Requerido por Flask-Praetorian
     @classmethod
     def lookup(cls, username):
         return cls.query.filter_by(nombre=username).first()
 
+    def identify(self):
+        return self.id
+
+    @property
+    def identity(self):
+        return self.id  # <- ✅ Esta línea soluciona el error
+
+    @property
+    def rolenames(self):
+        return ["admin"] if self.nombre == "admin" else ["usuario"]
+
     @property
     def password(self):
         return self.contrasenya
-
-    # Si planeas usar roles, puedes añadirlos como una propiedad adicional:
-    @property
-    def rolenames(self):
-        return []  # O una lista con roles si los usas
 
 class Proyecto(db.Model):
     __tablename__ = "proyecto"
