@@ -5,6 +5,8 @@ from flask_cors import CORS
 from api.app import api_bp, obtener_usuarios, crear_usuario, eliminar_usuario, obtener_proyectos, crear_proyecto, eliminar_proyecto, obtener_mensajes, crear_mensaje
 from api.chat import chat_bp
 import flask_praetorian
+from flask_praetorian.exceptions import ExpiredAccessError, PraetorianError
+
 import os
 
 # Crear guardián de seguridad
@@ -62,13 +64,24 @@ def home():
 
 @application.route("/sesion_iniciada")
 def sesion_iniciada():
-    token=request.cookies.get("access_token")
+    token = request.cookies.get("access_token")
     if not token:
         flash("Debes iniciar sesión para acceder a esta página", "danger")
         return redirect(url_for("login"))
-    
-    user=guard.extract_jwt_token(token)
-    return render_template("sesion_iniciada.html", usuario=user)
+
+    try:
+        user = guard.extract_jwt_token(token)
+        return render_template("sesion_iniciada.html", usuario=user)
+    except ExpiredAccessError:
+        flash("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.", "warning")
+    except PraetorianError:
+        flash("Token inválido. Inicia sesión de nuevo.", "danger")
+    except Exception:
+        flash("Error desconocido de autenticación. Inicia sesión de nuevo.", "danger")
+
+    response = redirect(url_for("login"))
+    response.delete_cookie("access_token")
+    return response
 
 @application.route("/dashboard")
 def dashboard():
