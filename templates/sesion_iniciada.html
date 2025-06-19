@@ -1,12 +1,21 @@
 {% extends "base.html" %}
 
+{% block title %}Sesión Iniciada - Sigma Security{% endblock %}
+
 {% block content %}
-    <br><br><br>
-
-    <h1>Sesión ya iniciada</h1>
-    <br>
-    <a href="/logout">Logout</a>
-
-    <br><br>
-
+<div class="sesion-container">
+    <div class="sesion-card">
+        <div class="sesion-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="#2c3e50"/>
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#fff"/>
+            </svg>
+        </div>
+        <h1 class="sesion-title">¡Sesión ya iniciada!</h1>
+        <p class="sesion-text">Ya tienes una sesión activa en Sigma Security.<br>Si deseas salir, puedes cerrar sesión abajo.</p>
+        <a href="/logout" class="sesion-logout-btn">Cerrar sesión</a>
+    </div>
+</div>
 {% endblock %}
+
+{% block footer %}{% endblock %}

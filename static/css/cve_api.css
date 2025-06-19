@@ -1,0 +1,90 @@
+/* cve_api.css */
+.cve-api-container {
+    background: #f8fafc;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cve-api-card {
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid #e3e6ea;
+    max-width: 1200px;
+    width: 100%;
+    min-width: 350px;
+    box-sizing: border-box;
+}
+.card {
+    border-radius: 12px;
+    border: 1px solid #e3e6ea;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 850px;
+    width: 100%;
+    min-width: 300px;
+    box-sizing: border-box;
+    word-break: break-word;
+}
+.card-header.bg-secondary, .card-header.bg-gradient.bg-secondary {
+    background: linear-gradient(90deg, #2c3e50 60%, #2980b9 100%) !important;
+    color: #fff !important;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #e3e6ea;
+    padding-left: 20px;
+    padding-right: 20px;
+    white-space: normal;
+}
+.card-body {
+    background: #f4f8fb;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding-left: 20px;
+    padding-right: 20px;
+    word-break: break-word;
+}
+.card-body *, .card-header * {
+    word-break: break-word;
+    white-space: normal !important;
+}
+.list-group-item {
+    background: #f4f8fb;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    color: #2c3e50;
+}
+.badge.bg-light {
+    background: #e3e6ea !important;
+    color: #2c3e50 !important;
+    font-weight: 500;
+}
+.badge.bg-info {
+    background: #2980b9 !important;
+    color: #fff !important;
+    font-weight: 500;
+}
+.badge.bg-danger {
+    background: #27ae60 !important;
+    color: #fff !important;
+    font-weight: 500;
+}
+.text-danger {
+    color: #2980b9 !important;
+}
+.text-success {
+    color: #27ae60 !important;
+}
+.btn-primary {
+    background: #2980b9;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background: #2c3e50;
+}
+.card-body, .list-group-item, .card, .cve-api-card, .card-header, .card-body * {
+    color: #111 !important;
+} 

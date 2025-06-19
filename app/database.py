@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 from sqlalchemy import inspect
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, ForeignKey, DateTime,Column
-from datetime import datetime
+from sqlalchemy import Integer, String, ForeignKey, DateTime,Column, Text
+from datetime import datetime, timezone
 from api.engine import engine,uri
 from flask_login import UserMixin
 
@@ -25,7 +25,7 @@ class User(db.Model):
     id = Column(Integer, primary_key=True)
     nombre = Column(String(50), nullable=False, unique=True)  # Este es el username
     contrasenya = Column(String(200), nullable=False)
-    fecha_registro = Column(DateTime, default=datetime.utcnow)
+    fecha_registro = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     proyectos = relationship("Proyecto", back_populates="creador", cascade="all, delete-orphan")
 
@@ -55,8 +55,9 @@ class Proyecto(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     nombre: Mapped[str] = mapped_column(String(50), nullable=False)
     descripcion: Mapped[str] = mapped_column(String(200), nullable=True)
-    fecha_creacion: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    fecha_modificacion: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    fecha_creacion: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    fecha_modificacion: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    sbom: Mapped[str] = mapped_column(Text, nullable=True)  # Nuevo campo para SBOM
     #Proyecto pertenece a usuario
     creador_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     #Accedes a user desde proyectos

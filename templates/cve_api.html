@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Análisis de Vulnerabilidades CVE - Sigma Security{% endblock %}
+{% block content %}
+<div class="container cve-api-container py-5 my-5 d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="cve-api-card card shadow-lg p-4 mb-5 w-100" style="max-width: 700px;">
+        <h2 class="mb-4 text-center text-primary fw-bold">Análisis de Vulnerabilidades (CVE)</h2>
+        <form method="post" class="mb-4">
+            <div class="mb-3">
+                <label for="proyecto_id" class="form-label fw-semibold">Selecciona un proyecto:</label>
+                <select class="form-select" id="proyecto_id" name="proyecto_id" required>
+                    <option value="">-- Elige un proyecto --</option>
+                    {% for proyecto in proyectos %}
+                        <option value="{{ proyecto.id }}" {% if proyecto_seleccionado and proyecto_seleccionado.id == proyecto.id %}selected{% endif %}>{{ proyecto.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary px-4">Analizar SBOM</button>
+            </div>
+        </form>
+        {% if resultados is not none %}
+            <h4 class="text-center mb-4">Resultados para: <span class="text-primary">{{ proyecto_seleccionado.nombre }}</span></h4>
+            {% if resultados|length == 0 %}
+                <div class="alert alert-info text-center">No se encontraron componentes en el SBOM.</div>
+            {% endif %}
+            {% for comp in resultados %}
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-gradient bg-secondary text-white d-flex align-items-center justify-content-between">
+                        <div>
+                            <strong class="fs-5">{{ comp.nombre }}</strong>
+                            {% if comp.version %} <span class="badge bg-light text-dark ms-2">v{{ comp.version }}</span>{% endif %}
+                            {% if comp.purl %}<span class="badge bg-info text-dark ms-2">{{ comp.purl }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if comp.cves and comp.cves|length > 0 %}
+                            <ul class="list-group list-group-flush">
+                            {% for cve in comp.cves %}
+                                <li class="list-group-item d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                                    <div>
+                                        <strong class="text-danger">{{ cve.cve.id }}</strong>
+                                        <span class="d-block d-md-inline text-muted small">{{ cve.cve.descriptions[0].value }}</span>
+                                    </div>
+                                    {% if cve.cve.metrics and cve.cve.metrics.CVSSV3 %}
+                                        <span class="badge bg-danger ms-md-3 mt-2 mt-md-0">CVSS: {{ cve.cve.metrics.CVSSV3[0].cvssData.baseScore }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span class="text-success fw-semibold">Sin vulnerabilidades conocidas en NVD/CVE.</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

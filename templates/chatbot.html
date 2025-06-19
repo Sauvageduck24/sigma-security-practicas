@@ -11,16 +11,23 @@
     
 
     
-    <!-- Contenedor principal -->
-    <div class="container-fluid mt-3 p-3 color_d9">
-        <div class="row">
+    <div class="chatbot-header text-center py-3 mb-3">
+        <img src="{{ url_for('static', filename='images/chatbot.png') }}" alt="Chatbot" class="chatbot-logo mb-2">
+        <h2 class="chatbot-title">Asistente de Seguridad</h2>
+        <p class="chatbot-desc">Haz tus preguntas técnicas o selecciona un proyecto para conversar sobre él.</p>
+    </div>
+
+    <br>
+
+    <div class="container chatbot-main-container">
+        <div class="row justify-content-center align-items-start flex-nowrap">
             <!-- Lista de proyectos -->
-            <div class="col-12 col-md-3 mb-3">
-                <button class="btn btn-primary d-md-none mb-3" style="background-color: white; color: black; outline: none; border: none;" type="button" data-bs-toggle="collapse" data-bs-target="#proyectosCollapse" aria-expanded="false" aria-controls="proyectosCollapse">
+            <div class="col-12 col-md-3 mb-3 proyectos-col">
+                <button class="btn btn-primary d-md-none mb-3 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#proyectosCollapse" aria-expanded="false" aria-controls="proyectosCollapse">
                     Proyectos
                 </button>
                 <div class="collapse d-md-block" id="proyectosCollapse">
-                    <div class="card" style="background-color: #1A2B49;">
+                    <div class="card proyectos-card">
                         <div class="card-header d-flex justify-content-between align-items-center text-white">
                             <span>Proyectos</span>
                             <button class="btn btn-success btn-sm" onclick="agregarProyecto()">+</button>
@@ -33,14 +40,19 @@
             </div>
     
             <!-- Sección de chat -->
-            <div class="col-12 col-md-9 color_d9">
-                <div class="card">
-                    <!-- Aquí le agregamos el id="chatBox" -->
-                    <div class="card-body chat-box m-0 p-0" id="chat-box"></div>
-                    <div class="card-footer">
+            <div class="col-12 col-md-9 d-flex justify-content-center chat-col">
+                <div class="card chat-card chat-max-width">
+                    <div class="card-body chat-box m-0 p-0" id="chat-box">
+                        <!-- Mensajes del chat -->
+                    </div>
+                    <div class="chat-loader" id="chat-loader" style="display:none;">
+                        <div class="loader"></div>
+                        <span>El bot está pensando...</span>
+                    </div>
+                    <div class="card-footer bg-white">
                         <div class="input-group">
-                            <input type="text" id="mensajeInput" class="form-control" placeholder="Escribe tu mensaje..." autofocus>
-                            <button id="enviarBtn" class="btn btn-primary" style="background-color: #1A2B49;">Enviar</button>
+                            <input type="text" id="mensajeInput" class="form-control" placeholder="Escribe tu mensaje..." autofocus autocomplete="off">
+                            <button id="enviarBtn" class="btn btn-primary">Enviar</button>
                         </div>
                     </div>
                 </div>
@@ -48,5 +60,5 @@
         </div>
     </div>
 
-    <br>
+    <br><br>    
 {% endblock %}

@@ -1,83 +1,72 @@
 body {
-    background-color: #D6E4F0;
+    background-color: #eaf0fa;
     overflow-x: hidden;
     box-sizing: border-box;
-    margin-top: 8%;
+    margin-top: 3%;
+    margin-bottom: 100px;
 }
 
-.chat-box {
-    max-height: 400px; /* Limita la altura y permite el scroll si hay muchos mensajes */
-    overflow-y: auto;
-}
-
-.card {
-    width: 100%; /* Asegura que la tarjeta use todo el ancho disponible */
-    background-color: #ffffff;
-}
-
-.card-body {
-    min-height: 300px; /* Evita que el chat sea demasiado pequeÃ±o */
-}
-
-.mensaje_bot, .mensaje_persona {
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 60%;
-    margin-bottom: 10px;
-    text-align: left; /* Alinea el texto a la izquierda */
-}
-
-.mensaje_bot {
-    background-color: #d9e6f2;
-    color: #333;
-    margin-left: 10px; /* Alinea a la izquierda */
-}
-
-.mensaje_persona {
-    background-color: #1A2B49;
+.chatbot-header {
+    background: linear-gradient(90deg, #1A2B49 60%, #2980b9 100%);
     color: #fff;
-    margin-left: 10px; /* Alinea a la izquierda */
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    margin-bottom: 1rem;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+}
+.chatbot-logo {
+    width: 60px;
+    height: 60px;
+}
+.chatbot-title {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+}
+.chatbot-desc {
+    font-size: 1.1rem;
+    color: #eaf0fa;
+    margin-bottom: 0;
 }
 
-.icono {
-    font-size: 24px;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
+.chatbot-container {
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
 }
 
-.proyecto-activo {
-    background-color: blue !important;
-    font-weight: bold;
-    color: black;
+.chat-main-container, .chatbot-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
 }
 
+.chat-max-width {
+    max-width: 1100px;
+    width: 100%;
+}
 
-
-/* Cambiar el color del desplegable de proyectos */
-#proyectosCollapse .card {
-    background-color: #ffffff;
-    border: none;
+.proyectos-card {
+    background-color: #1A2B49;
     border-radius: 12px;
-    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    min-width: 300px;
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.proyectos-card, .proyectos-card * {
+    color: #fff !important;
 }
 
 #proyectosCollapse .card-header {
-        background-color: #1A2B49;
-        color: white;
-        font-weight: bold;
-        font-size: 1.1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#proyectosCollapse .btn-success {
-    background-color: #28a745;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-#proyectosCollapse .btn-success:hover {
-    background-color: #218838;
+    background-color: #1A2B49;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.7rem 1rem;
 }
 
 #listaProyectos .list-group-item {
@@ -86,78 +75,195 @@ body {
     border: none;
     border-bottom: 1px solid #e0e0e0;
     border-radius: 0;
-    padding: 10px 15px;
+    padding: 8px 12px;
     transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+#listaProyectos .list-group-item.active, #listaProyectos .list-group-item:hover {
+    background-color: #2980b9;
+    color: #fff;
 }
 
-#listaProyectos .list-group-item:last-child {
-    border-bottom: none;
+.chat-card {
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    background: #fff;
 }
 
-#listaProyectos .btn-danger {
-    background-color: #dc3545;
-    border: none;
-    padding: 3px 8px;
-    font-size: 0.8rem;
-    transition: background-color 0.3s ease;
+.chat-box {
+    max-height: 380px;
+    min-height: 220px;
+    overflow-y: auto;
+    padding: 0.7rem 0.7rem 0.5rem 0.7rem;
+    background: #f6f8fc;
+    border-radius: 16px 16px 0 0;
+    font-size: 1.08rem;
 }
 
-#listaProyectos .btn-danger:hover {
-    background-color: #c82333;
+.mensaje_bot, .mensaje_persona {
+    padding: 10px 14px;
+    border-radius: 16px;
+    max-width: 80%;
+    margin-bottom: 8px;
+    font-size: 1.02rem;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+    animation: fadeIn 0.4s;
 }
-
-.app-container {
+.mensaje_bot {
+    background-color: #d9e6f2;
+    color: #333;
+    margin-left: 8px;
+    align-self: flex-start;
+}
+.mensaje_persona {
+    background-color: #2980b9;
+    color: #fff;
+    margin-left: auto;
+    align-self: flex-end;
+}
+.icono {
+    font-size: 22px;
+    margin-right: 8px;
     display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    flex-wrap: wrap;
+    align-items: center;
 }
 
+.chat-loader {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    background: #f6f8fc;
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 1.05rem;
+    color: #1A2B49;
+}
+.loader {
+    border: 4px solid #eaf0fa;
+    border-top: 4px solid #2980b9;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
+.card-footer {
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid #e0e0e0;
+    padding: 0.5rem 0.7rem;
+}
+
+.input-group .form-control {
+    border-radius: 8px 0 0 8px;
+    border: 1px solid #2980b9;
+    font-size: 1.02rem;
+    padding: 0.5rem 0.7rem;
+}
+.input-group .btn {
+    border-radius: 0 8px 8px 0;
+    font-size: 1.02rem;
+    background: #2980b9;
+    border: none;
+    transition: background 0.2s;
+    padding: 0.5rem 1.1rem;
+}
+.input-group .btn:hover {
+    background: #1A2B49;
+}
+
+@media (min-width: 992px) {
+    .col-md-2 {
+        max-width: 170px;
+        flex: 0 0 170px;
+    }
+    .col-md-10 {
+        max-width: 1030px;
+        flex: 0 0 1030px;
+    }
+}
 
 @media (max-width: 768px) {
-    .color_d9 {
-        padding: 0.5rem;
+    .chatbot-header {
+        font-size: 1.1rem;
+        padding: 0.7rem 0.3rem;
+        margin-bottom: 0.7rem;
     }
+    .chatbot-title {
+        font-size: 1.1rem;
+    }
+    .chatbot-container {
+        padding: 0.2rem;
+    }
+    .chat-box {
+        min-height: 120px;
+        padding: 0.4rem 0.2rem 0.2rem 0.2rem;
+    }
+    .mensaje_bot, .mensaje_persona {
+        font-size: 0.92rem;
+        padding: 7px 8px;
+    }
+    .chat-max-width {
+        max-width: 100vw;
+    }
+    .col-md-2, .col-md-10 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .chatbot-main-container {
+        padding: 0 2px;
+    }
+}
 
-    #proyectosCollapse .card-header {
-        flex-direction: column;
-        align-items: flex-start;
+.chatbot-main-container .row.flex-nowrap {
+    gap: 2.5rem;
+}
+
+.proyectos-col {
+    padding-left: 0;
+    margin-left: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.chat-col {
+    padding-right: 0;
+    margin-right: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+@media (min-width: 992px) {
+    .col-md-3 {
+        max-width: 320px;
+        flex: 0 0 320px;
+    }
+    .col-md-9 {
+        max-width: 900px;
+        flex: 0 0 900px;
+    }
+    .chat-max-width {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .chatbot-main-container .row.flex-nowrap {
         gap: 0.5rem;
     }
-
-    #proyectosCollapse .btn-success {
-        width: 100%;
-        font-size: 1rem;
-        padding: 0.5rem;
+    .col-md-3, .col-md-9 {
+        max-width: 100%;
+        flex: 0 0 100%;
     }
-
-    #listaProyectos .list-group-item {
-        font-size: 0.95rem;
-        padding: 0.6rem 0.8rem;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    #listaProyectos .btn-danger {
-        margin-top: 0.5rem;
-        align-self: flex-end;
-    }
-
-    .btn-proyectos {
-        background-color: white;
-        color: black;
-        border: 2px solid #1A2B49;
-        font-weight: bold;
-        transition: all 0.2s ease;
-        border-radius: 8px;
-    }
-
-    .btn-proyectos:active,
-    .btn-proyectos:focus {
-        background-color: #1A2B49;
-        color: white;
-        outline: none;
-        box-shadow: 0 0 10px rgba(26, 43, 73, 0.3);
+    .chat-max-width {
+        max-width: 100vw;
     }
 }

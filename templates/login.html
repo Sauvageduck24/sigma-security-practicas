@@ -1,20 +1,105 @@
 {% extends "base.html" %}
 
+{% block title %}Iniciar Sesión - Sigma Security{% endblock %}
+
 {% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/security-card-svgrepo-com.svg') }}" alt="Logo" class="login-logo">
+            </div>
+            <h1 class="login-title">Iniciar Sesión</h1>
+            <p class="login-subtitle">Accede a tu cuenta de Sigma Security</p>
+        </div>
 
-    <br><br><br>
+        <form method="post" class="login-form">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <input type="text" name="nombre" class="form-input" placeholder="Nombre de usuario" required>
+                </div>
+            </div>
 
-    <h1>Iniciar sesión</h1>
-    <form method="post">
-        <label>Nombre de usuario:</label><br>
-        <input type="text" name="nombre" required><br><br>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <input type="password" name="contrasenya" class="form-input" placeholder="Contraseña" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword(this)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-        <label>Contraseña:</label><br>
-        <input type="password" name="contrasenya" required><br><br>
+            <div class="form-options">
+                <label class="checkbox-container">
+                    <input type="checkbox" class="remember-checkbox">
+                    <span class="checkmark"></span>
+                    Recordarme
+                </label>
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+            </div>
 
-        <button type="submit">Entrar</button>
-    </form>
+            <button type="submit" class="login-button">
+                <span class="button-text">Iniciar Sesión</span>
+                <div class="button-loader" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        </form>
 
-    <br><br>
+        <div class="login-footer">
+            <p class="no-account">¿No tienes una cuenta? <a href="#" class="signup-link">Regístrate aquí</a></p>
+        </div>
+    </div>
+</div>
 
+<script>
+function togglePassword(button) {
+    const input = button.parentElement.querySelector('input');
+    const icon = button.querySelector('svg');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = `
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C7 20 2 16 2 12C2 8 7 4 12 4C16 4 20 8 20 12C20 16 17.94 17.94 17.94 17.94Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.9 9.9C10.5883 9.21167 11.5 8.8 12.5 8.8C13.5 8.8 14.4117 9.21167 15.1 9.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.12 14.12C13.8454 14.4148 13.5141 14.6512 13.1462 14.8151C12.7782 14.9791 12.3809 15.0673 11.9781 15.0744C11.5753 15.0815 11.1747 15.0074 10.8017 14.8565C10.4287 14.7056 10.0887 14.4811 9.80385 14.1962C9.51897 13.9113 9.29439 13.5714 9.14351 13.1984C8.99262 12.8254 8.91853 12.4247 8.92563 12.0219C8.93274 11.6191 9.02091 11.2219 9.18488 10.8539C9.34884 10.4859 9.58525 10.1547 9.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1 1L23 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        `;
+    } else {
+        input.type = 'password';
+        icon.innerHTML = `
+            <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        `;
+    }
+}
+
+// Efecto de carga en el botón
+document.querySelector('.login-form').addEventListener('submit', function(e) {
+    const button = document.querySelector('.login-button');
+    const buttonText = button.querySelector('.button-text');
+    const buttonLoader = button.querySelector('.button-loader');
+    
+    buttonText.style.display = 'none';
+    buttonLoader.style.display = 'flex';
+    button.disabled = true;
+});
+</script>
 {% endblock %}
+
+{% block footer %}{% endblock %}

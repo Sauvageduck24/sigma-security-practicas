@@ -244,6 +244,7 @@ PyQt5-sip @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pyqt-s
 PyQtWebEngine==5.15.6
 PySocks @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pysocks_1699473336188/work
 pytest @ file:///C:/b/abs_een_3z747j/croot/pytest_1717793253670/work
+pytest-mock
 python-dateutil @ file:///C:/b/abs_3au_koqnbs/croot/python-dateutil_1716495777160/work
 python-dotenv @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/python-dotenv_1699475097728/work
 python-json-logger @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/python-json-logger_1699543626759/work

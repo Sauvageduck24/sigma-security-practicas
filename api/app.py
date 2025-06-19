@@ -34,11 +34,11 @@ def eliminar_usuario(user_id):
 
 def obtener_proyectos():
     conn = get_db_connection()
-    proyectos = conn.execute(text('SELECT id, nombre, descripcion, creador_id FROM proyecto')).fetchall()
-    return [{'id': p[0], 'nombre': p[1], 'descripcion': p[2], 'creador_id': p[3]} for p in proyectos]
+    proyectos = conn.execute(text('SELECT id, nombre, descripcion, creador_id, sbom FROM proyecto')).fetchall()
+    return [{'id': p[0], 'nombre': p[1], 'descripcion': p[2], 'creador_id': p[3], 'sbom': p[4]} for p in proyectos]
 
-def crear_proyecto(nombre, descripcion, creador_id):
-    proyecto = Proyecto(nombre=nombre, descripcion=descripcion, creador_id=creador_id)
+def crear_proyecto(nombre, descripcion, creador_id, sbom=None):
+    proyecto = Proyecto(nombre=nombre, descripcion=descripcion, creador_id=creador_id, sbom=sbom)
     conn = get_db_connection()
     conn.add(proyecto)
     conn.commit()
@@ -56,8 +56,8 @@ def eliminar_proyecto(proyecto_id):
 
 def obtener_mensajes():
     conn = get_db_connection()
-    mensajes = conn.execute(text('SELECT id, mensaje, fecha_envio, usuario_id FROM mensajes')).fetchall()
-    return [{'id': m[0], 'mensaje': m[1], 'fecha_envio': m[2], 'usuario_id': m[3]} for m in mensajes]
+    mensajes = conn.execute(text('SELECT id, contenido, fecha_envio, usuario_id FROM mensajes')).fetchall()
+    return [{'id': m[0], 'contenido': m[1], 'fecha_envio': m[2], 'usuario_id': m[3]} for m in mensajes]
 
 def crear_mensaje(mensaje, usuario_id, proyecto_id):
     mensaje = Mensaje(contenido=mensaje, usuario_id=usuario_id, proyecto_id=proyecto_id)
@@ -68,6 +68,19 @@ def crear_mensaje(mensaje, usuario_id, proyecto_id):
 
 def get_db_connection():
     return db.session
+
+def actualizar_proyecto(proyecto_id, nombre, descripcion, sbom=None):
+    conn = get_db_connection()
+    proyecto = Proyecto.query.get(proyecto_id)
+    if not proyecto:
+        return None
+    proyecto = conn.merge(proyecto)
+    proyecto.nombre = nombre
+    proyecto.descripcion = descripcion
+    if sbom is not None:
+        proyecto.sbom = sbom
+    conn.commit()
+    return proyecto
 
 class Usuarios(Resource):
     def get(self):

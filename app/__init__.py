@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import db, User, Proyecto, Mensaje, init_db
 from flask_cors import CORS
-from api.app import api_bp, obtener_usuarios, crear_usuario, eliminar_usuario, obtener_proyectos, crear_proyecto, eliminar_proyecto, obtener_mensajes, crear_mensaje
+from api.app import api_bp, obtener_usuarios, crear_usuario, eliminar_usuario, obtener_proyectos, crear_proyecto, eliminar_proyecto, obtener_mensajes, crear_mensaje, actualizar_proyecto
 from api.chat import chat_bp
 import flask_praetorian
 from flask_praetorian.exceptions import ExpiredAccessError, PraetorianError
+import io
+import requests
+import json
 
 import os
 
@@ -160,15 +163,19 @@ def crear_proyecto_app():
     if not token:
         flash("Debes iniciar sesión como administrador para acceder a esta página", "danger")
         return redirect(url_for("login"))
-    
     user_data = guard.extract_jwt_token(token)  # Decodifica el token
     if request.method == "POST":
         nombre = request.form["nombre"]
         descripcion = request.form["descripcion"]
-        crear_proyecto(nombre, descripcion, user_data['id'])
+        sbom_text = None
+        if "sbom" in request.files:
+            sbom_file = request.files["sbom"]
+            if sbom_file and sbom_file.filename:
+                sbom_text = sbom_file.read().decode("utf-8", errors="replace")
+        from api.app import crear_proyecto
+        crear_proyecto(nombre, descripcion, user_data['id'], sbom_text)
         flash("Proyecto creado exitosamente", "success")
         return redirect(url_for("dashboard"))
-
     return render_template("crear_proyecto.html")
 
 @application.route("/api/proyectos", methods=["POST"])
@@ -317,6 +324,115 @@ def test_db():
         return f"Conexión exitosa: {result}"
     except Exception as e:
         return f"Error conectando a la base de datos: {e}"
+
+@application.route("/editar_proyecto/<int:id>", methods=["GET", "POST"])
+def editar_proyecto(id):
+    token = request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    user_data = guard.extract_jwt_token(token)
+    proyecto = next((p for p in obtener_proyectos() if p["id"] == id and p["creador_id"] == user_data["id"]), None)
+    if not proyecto:
+        flash("Proyecto no encontrado o no autorizado", "danger")
+        return redirect(url_for("dashboard"))
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        descripcion = request.form["descripcion"]
+        sbom_text = proyecto.get("sbom")
+        if "sbom" in request.files:
+            sbom_file = request.files["sbom"]
+            if sbom_file and sbom_file.filename:
+                sbom_text = sbom_file.read().decode("utf-8", errors="replace")
+        from api.app import actualizar_proyecto
+        actualizar_proyecto(id, nombre, descripcion, sbom_text)
+        flash("Proyecto actualizado correctamente", "success")
+        return redirect(url_for("dashboard"))
+    return render_template("editar_proyecto.html", proyecto=proyecto)
+
+@application.route("/borrar_proyecto/<int:id>", methods=["POST"])
+def borrar_proyecto(id):
+    token = request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    user_data = guard.extract_jwt_token(token)
+    proyecto = next((p for p in obtener_proyectos() if p["id"] == id and p["creador_id"] == user_data["id"]), None)
+    if not proyecto:
+        flash("Proyecto no encontrado o no autorizado", "danger")
+        return redirect(url_for("dashboard"))
+    from api.app import eliminar_proyecto
+    eliminar_proyecto(id)
+    flash("Proyecto eliminado correctamente", "success")
+    return redirect(url_for("dashboard"))
+
+@application.route("/descargar_sbom/<int:id>")
+def descargar_sbom(id):
+    token = request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    user_data = guard.extract_jwt_token(token)
+    proyecto = Proyecto.query.filter_by(id=id, creador_id=user_data["id"]).first()
+    if not proyecto or not proyecto.sbom:
+        flash("SBOM no disponible para este proyecto", "warning")
+        return redirect(url_for("dashboard"))
+    sbom_content = proyecto.sbom
+    return send_file(
+        io.BytesIO(sbom_content.encode("utf-8")),
+        mimetype="application/json",
+        as_attachment=True,
+        download_name=f"sbom_proyecto_{id}.json"
+    )
+
+@application.route("/cve_api", methods=["GET", "POST"])
+def cve_api():
+    token = request.cookies.get("access_token")
+    if not token:
+        flash("Debes iniciar sesión para acceder a esta página", "danger")
+        return redirect(url_for("login"))
+    user_data = guard.extract_jwt_token(token)
+    # Filtrar solo proyectos con SBOM
+    proyectos = [p for p in obtener_proyectos() if p["creador_id"] == user_data['id'] and p.get("sbom")]
+
+    if request.method == "POST":
+        proyecto_id = int(request.form.get("proyecto_id"))
+        proyecto = next((p for p in proyectos if p["id"] == proyecto_id), None)
+        if not proyecto or not proyecto.get("sbom"):
+            flash("Proyecto no encontrado o sin SBOM", "warning")
+            return render_template("cve_api.html", proyectos=proyectos, resultados=None)
+        try:
+            sbom = json.loads(proyecto["sbom"])
+        except Exception:
+            flash("El SBOM no es un JSON válido.", "danger")
+            return render_template("cve_api.html", proyectos=proyectos, resultados=None)
+        componentes = sbom.get("components", [])
+        resultados = []
+        for comp in componentes:
+            nombre = comp.get("name")
+            version = comp.get("version")
+            purl = comp.get("purl")
+            query = nombre
+            if version:
+                query += f" {version}"
+            url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={query}"
+            try:
+                resp = requests.get(url, timeout=5)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    cves = data.get("vulnerabilities", [])
+                else:
+                    cves = []
+            except Exception:
+                cves = []
+            resultados.append({
+                "nombre": nombre,
+                "version": version,
+                "purl": purl,
+                "cves": cves
+            })
+        return render_template("cve_api.html", proyectos=proyectos, resultados=resultados, proyecto_seleccionado=proyecto)
+    return render_template("cve_api.html", proyectos=proyectos, resultados=None)
 
 if __name__ == "__main__":
     application.run(debug=True)

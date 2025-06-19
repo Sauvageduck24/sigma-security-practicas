@@ -1,18 +1,31 @@
 {% extends "base.html" %}
 
+{% block title %}Crear Proyecto - Sigma Security{% endblock %}
+
 {% block content %}
-
-<br><br><br>
-    <h1>Crear Proyecto</h1>
-    <form action="{{ url_for('crear_proyecto_app') }}" method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        <br><br>
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" rows="4" cols="50" required></textarea>
-        <br><br>
-        <button type="submit">Crear</button>
-    </form>
-    <br><br>
-
+<div class="crear-proyecto-container">
+    <div class="crear-proyecto-card card shadow-sm">
+        <div class="card-body">
+            <h2 class="mb-4 text-primary">Crear Proyecto</h2>
+            <form action="{{ url_for('crear_proyecto_app') }}" method="post" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="nombre" class="form-label">Nombre del proyecto</label>
+                    <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control form-control-lg" id="descripcion" name="descripcion" rows="4" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="sbom" class="form-label">SBOM (opcional, XML/JSON)</label>
+                    <input type="file" class="form-control" id="sbom" name="sbom" accept=".xml,.json,.txt">
+                </div>
+                <div class="d-flex justify-content-between mt-4 gap-3 flex-wrap">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg flex-fill">Cancelar</a>
+                    <button type="submit" class="btn btn-primary btn-lg flex-fill">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}  
