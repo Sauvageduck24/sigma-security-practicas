@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Precios - Sigma Security{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="container py-5">
+    <h2 class="mb-4 text-primary">Planes y precios</h2>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Básico</h5>
+                    <p class="card-text">1 proyecto<br>10 sugerencias<br><strong>0 €/mes</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Profesional</h5>
+                    <p class="card-text">10 proyectos<br>100 sugerencias<br>Soporte por chat<br>Acceso a la API<br><strong>19,99 €/mes</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Empresarial</h5>
+                    <p class="card-text">100 proyectos<br>Sugerencias ilimitadas<br>Soporte por chat<br>Acceso por teléfono<br>Acceso a la API<br><strong>49,99 €/mes</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

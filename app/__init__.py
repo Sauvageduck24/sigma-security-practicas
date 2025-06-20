@@ -434,5 +434,13 @@ def cve_api():
         return render_template("cve_api.html", proyectos=proyectos, resultados=resultados, proyecto_seleccionado=proyecto)
     return render_template("cve_api.html", proyectos=proyectos, resultados=None)
 
+@application.route("/caracteristicas")
+def caracteristicas():
+    return render_template("caracteristicas.html")
+
+@application.route("/precios")
+def precios():
+    return render_template("precios.html")
+
 if __name__ == "__main__":
     application.run(debug=True)
