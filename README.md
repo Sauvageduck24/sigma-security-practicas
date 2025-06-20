@@ -1,5 +1,3 @@
-
-
 # [Sigma Security (Grupo 5)](https://sauvageduck24.pythonanywhere.com/)
 
 ---
@@ -226,17 +224,61 @@ Una vez que el usuario eliga, si la aplicacion es web o desktop, se introducirá
 
 ---
 
-## **Instalación**
+## **Instalación y Ejecución con Docker**
 
-Para ejecutar el proyecto, sigue estos pasos:
+Para ejecutar el proyecto usando Docker y Docker Compose, sigue estos pasos:
 
 1. Clona este repositorio:
    ```bash
    git clone https://github.com/Sauvageduck24/sigma-security
+   cd sigma-security
    ```
 
-2. Dirígete a la carpeta del proyecto y, una vez dentro, ejecuta el archivo `app.py` (es necesario estar dentro de la carpeta para que las rutas relativas funcionen correctamente).
+2. Construye y levanta los servicios (Flask y MySQL) con Docker Compose:
    ```bash
-   python app.py
+   docker-compose up --build
    ```
+
+   Esto descargará las imágenes necesarias, instalará las dependencias y levantará tanto la base de datos MySQL como la aplicación Flask.
+
+3. Accede a la aplicación web desde tu navegador en:
+   [http://localhost:5000](http://localhost:5000)
+
+4. Para detener los servicios, presiona `Ctrl+C` en la terminal donde se está ejecutando Docker Compose.
+   Si quieres borrar los contenedores y los datos de la base de datos, ejecuta:
+   ```bash
+   docker-compose down -v
+   ```
+
+## **Backup y restauración de la base de datos MySQL**
+
+### **Exportar (backup) la base de datos a un archivo SQL**
+
+Ejecuta este comando en tu terminal para crear un backup de la base de datos:
+
+```bash
+docker exec mysql_container mysqldump -u root -p1234 sigma_security > backup_sigma_security.sql
+```
+
+Esto generará el archivo `backup_sigma_security.sql` en tu máquina local.
+
+---
+
+### **Restaurar la base de datos desde un archivo SQL**
+
+1. Copia el archivo de backup al contenedor MySQL:
+   ```bash
+   docker cp backup_sigma_security.sql mysql_container:/backup_sigma_security.sql
+   ```
+2. Accede al contenedor MySQL:
+   ```bash
+   docker exec -it mysql_container bash
+   ```
+3. Ya dentro del contenedor, ejecuta:
+   ```bash
+   mysql -u root -p sigma_security < /backup_sigma_security.sql
+   # (pon la contraseña 1234 cuando lo pida)
+   exit
+   ```
+
 ---
