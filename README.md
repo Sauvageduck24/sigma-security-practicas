@@ -252,35 +252,45 @@ z
 
 ## **Backup y restauración de la base de datos MySQL**
 
-> **Nota:** Para restaurar la base de datos mientras la web está corriendo, debes abrir **otra ventana de PowerShell o terminal** y dejar la principal ejecutando la web con Docker Compose.
+> **IMPORTANTE:**
+> - Los comandos de backup y restauración pueden variar según el tipo de terminal que uses en Windows (PowerShell, CMD o WSL).
+> - **PowerShell** NO soporta el operador `<` para redirección de archivos. Debes usar el método con `Get-Content` y pipe.
+> - En **CMD** clásico o **WSL** (Windows Subsystem for Linux), puedes usar la redirección `<` como en Linux.
+> - Si tienes la web corriendo en una terminal, abre **otra ventana de PowerShell/CMD** para ejecutar los comandos de backup/restore.
 
 ### **Exportar (backup) la base de datos a un archivo SQL**
 
-Ejecuta este comando en tu terminal para crear un backup de la base de datos:
-
-```bash
-docker exec mysql_container mysqldump -u root -p1234 sigma_security > backup_sigma_security.sql
-```
-
-Esto generará el archivo `backup_sigma_security.sql` en tu máquina local.
+1. **Crea el backup dentro del contenedor:**
+   ```bash
+   docker exec mysql_container sh -c "mysqldump -u root -p1234 sigma_security > /backup_sigma_security.sql"
+   ```
+2. **Copia el archivo a tu máquina local:**
+   ```bash
+   docker cp mysql_container:/backup_sigma_security.sql backup_sigma_security.sql
+   ```
 
 ---
 
 ### **Restaurar la base de datos desde un archivo SQL**
 
-1. Copia el archivo de backup al contenedor MySQL:
-   ```bash
-   docker cp backup_sigma_security.sql mysql_container:/backup_sigma_security.sql
-   ```
-2. Accede al contenedor MySQL:
-   ```bash
-   docker exec -it mysql_container bash
-   ```
-3. Ya dentro del contenedor, ejecuta:
-   ```bash
-   mysql -u root -p sigma_security < /backup_sigma_security.sql
-   # (pon la contraseña 1234 cuando lo pida)
-   exit
-   ```
+#### **En PowerShell:**
+```powershell
+Get-Content .\backup_sigma_security.sql | docker exec -i mysql_container mysql -u root -p1234 sigma_security --binary-mode=1
+```
+
+#### **En CMD clásico o WSL:**
+```cmd
+docker exec -i mysql_container mysql -u root -p1234 sigma_security --binary-mode=1 < backup_sigma_security.sql
+```
+
+- Si usas PowerShell y pruebas el comando con `<`, verás un error de "RedirectionNotSupported". Usa siempre el método de `Get-Content` en PowerShell.
+- Si usas CMD o WSL, puedes usar la redirección `<` sin problemas.
+
+---
+
+**Recuerda:**
+- El backup solo guarda el estado de la base de datos en el momento de la exportación.
+- Si restauras, los datos actuales de la base de datos serán reemplazados por los del archivo SQL.
+- No subas archivos de backup con datos sensibles a repositorios públicos.
 
 ---
