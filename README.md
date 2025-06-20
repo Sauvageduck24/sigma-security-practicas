@@ -294,3 +294,15 @@ docker exec -i mysql_container mysql -u root -p1234 sigma_security --binary-mode
 - No subas archivos de backup con datos sensibles a repositorios públicos.
 
 ---
+
+## **Pruebas unitarias**
+
+Para ejecutar las pruebas unitarias del proyecto, simplemente ejecuta:
+
+```
+python -m pytest
+```
+
+Esto buscará y ejecutará automáticamente todas las pruebas dentro de la carpeta `tests`.
+
+---
