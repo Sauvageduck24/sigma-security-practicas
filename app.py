@@ -9,4 +9,4 @@ if path not in sys.path:
 # Importa la app de Flask
 from app import application
 
-application.run(port=5000, debug=True)
+application.run(host="0.0.0.0", port=5000, debug=True)

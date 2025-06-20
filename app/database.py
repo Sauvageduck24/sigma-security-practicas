@@ -11,6 +11,7 @@ from sqlalchemy import Integer, String, ForeignKey, DateTime,Column, Text
 from datetime import datetime, timezone
 from api.engine import engine,uri
 from flask_login import UserMixin
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 load_dotenv()
 
@@ -18,6 +19,12 @@ load_dotenv()
 db = SQLAlchemy()
 
 entorno = os.getenv('ENTORNO', 'local')
+
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "1234")
+DB_HOST = os.getenv("DB_HOST", "mysql")
+DB_NAME = os.getenv("DB_NAME", "sigma_security")
+uri = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
 class User(db.Model):
     __tablename__ = "user_account"
@@ -57,7 +64,7 @@ class Proyecto(db.Model):
     descripcion: Mapped[str] = mapped_column(String(200), nullable=True)
     fecha_creacion: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     fecha_modificacion: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    sbom: Mapped[str] = mapped_column(Text, nullable=True)  # Nuevo campo para SBOM
+    sbom: Mapped[str] = mapped_column(LONGTEXT, nullable=True)  # Nuevo campo para SBOM
     #Proyecto pertenece a usuario
     creador_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     #Accedes a user desde proyectos
