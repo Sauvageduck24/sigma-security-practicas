@@ -233,7 +233,7 @@ Para ejecutar el proyecto usando Docker y Docker Compose, sigue estos pasos:
    git clone https://github.com/Sauvageduck24/sigma-security
    cd sigma-security
    ```
-
+z
 2. Construye y levanta los servicios (Flask y MySQL) con Docker Compose:
    ```bash
    docker-compose up --build
@@ -251,6 +251,8 @@ Para ejecutar el proyecto usando Docker y Docker Compose, sigue estos pasos:
    ```
 
 ## **Backup y restauración de la base de datos MySQL**
+
+> **Nota:** Para restaurar la base de datos mientras la web está corriendo, debes abrir **otra ventana de PowerShell o terminal** y dejar la principal ejecutando la web con Docker Compose.
 
 ### **Exportar (backup) la base de datos a un archivo SQL**
 
