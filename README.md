@@ -190,6 +190,7 @@ Una vez que el usuario eliga, si la aplicacion es web o desktop, se introducirá
 ]
 ```
 
+
 **Descripción:** Aquí se describen los componentes utilizados por la aplicación, que en este caso son librerías externas necesarias para el funcionamiento del software.
 
 ## **Salida de datos del sistema**
